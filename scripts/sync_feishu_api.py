@@ -104,9 +104,12 @@ def public_url(value):
 
 def dimensions(parameters):
     # Prefer actual downloaded media dimensions over prompt target ratios.
-    measured = re.split(r'实测|实际(?:WebM|MP4|成片)|下载成片', parameters)[-1]
-    match = re.search(r'(\d{2,5})\s*[×xX]\s*(\d{2,5})', measured)
-    if match: return int(match[1]), int(match[2]), True
+    sections = re.split(r'实测|实际(?:WebM|MP4|成片)|下载成片', parameters)
+    # A later note such as "成片实测值" has no dimensions; keep the measured
+    # section before it instead of discarding that section.
+    for section in reversed(sections):
+        match = re.search(r'(\d{2,5})\s*[×xX]\s*(\d{2,5})', section)
+        if match: return int(match[1]), int(match[2]), True
     return 4, 3, False
 
 def build_catalog(records, urls, fields):

@@ -25,6 +25,13 @@ class SyncTests(unittest.TestCase):
         self.assertIsNone(sync.public_url('https://my.feishu.cn/base/private'))
         self.assertIsNone(sync.public_url('javascript:alert(1)'))
 
+    def test_measured_dimensions_survive_trailing_measurement_note(self):
+        parameters = ('目标 1920x1080。\n实测配套成片：\n'
+                      'video-1.mp4：1440×1440，14.000 秒。\n'
+                      'video-2.mp4：720×1280，14.000 秒。\n'
+                      '帧率、时长和尺寸是成片实测值。')
+        self.assertEqual(sync.dimensions(parameters), (1440, 1440, True))
+
 class MediaRefreshTests(unittest.TestCase):
     def test_concurrent_batches_deduplicate_and_keep_complete_results(self):
         import threading

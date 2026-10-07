@@ -33,6 +33,10 @@ npm run preview
 
 ## 本次整理结果
 
+2026-10-08 完成 Opus 5.5 灵感补充：从 [Prompt Motion](https://prompt-motion.com/) 和 [YouMind](https://youmind.com/zh-CN/opus-5-5-prompts/explore?sortBy=views&sortOrder=desc) 收录 481 条作品、489 个视频和 481 张封面，保留原有 6,779 条记录，作品库共 7,260 条。按原帖和完整视频指纹去重；同一视频的两个来源及提示词表述合并保留。3 条仅公开 Skill、1 条提示词与视频主题不符，已标为「待整理」；收录验收不代表提示词已经复现测试。
+
+同步后可筛选「模型：Claude Opus 5.5」或「生成方式：代码生成视频」。本站筛选选项来自完整字段定义及全库记录，随下一次成功的 Actions 同步更新；飞书「AI 页面搭建」分享网页使用独立代码，需要另行编辑和发布。
+
 2026-09-19 完成 Seedance 视频与封面补充：5,924 条补齐成功，69 条持续下载失败记录备份后移除。作品库最终共 6,779 条；本批最终保留 5,944 条 Seedance 案例。详见 [整理结果与公开来源清单](reports/2026-09-19-seedance-import/README.md)。
 
 ## 从飞书更新
