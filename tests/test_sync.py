@@ -6,6 +6,14 @@ spec = importlib.util.spec_from_file_location('sync', Path(__file__).parents[1] 
 sync = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(sync)
 class SyncTests(unittest.TestCase):
+    def test_image_cases_keep_every_display_image_without_a_video(self):
+        records=[{'record_id':'image-case','fields':{'作品名称':'two images','封面':[{'file_token':'a'},{'file_token':'b'}],'参考图':[{'file_token':'ref'}]}},
+                 {'record_id':'video-case','fields':{'封面':[{'file_token':'a'}],'对应视频':[{'file_token':'video'}]}}]
+        catalog=sync.build_catalog(records,{'a':'https://example.com/a.png','b':'https://example.com/b.png','ref':'https://example.com/reference.png','video':'https://example.com/video.mp4'},[])
+        image,video=catalog['items']
+        self.assertEqual(image['images'],['https://example.com/a.png','https://example.com/b.png'])
+        self.assertEqual(image['video'],'')
+        self.assertEqual(video['images'],[])
     def test_pagination_stops_and_rejects_repeated_cursor(self):
         with patch.object(sync, 'request', side_effect=[{'data': {'items': [1], 'has_more': True, 'page_token': 'p2'}}, {'data': {'items': [2], 'has_more': False}}]):
             self.assertEqual(sync.pages('test', 'secret'), [1, 2])

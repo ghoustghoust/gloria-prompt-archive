@@ -1,6 +1,8 @@
 import './style.css';
 import './liquid-glass.css';
 import './compact-ui.css';
+import './likes.css';
+import { createLikesClient } from './likes-client.js';
 import { icon, mountIcons } from './icons.js';
 import { startCompactFilters } from './compact-filters.js';
 import { startWorkSwipe } from './work-swipe.js';
@@ -16,6 +18,7 @@ import { version } from '../package.json';
 mountIcons();
 const $ = selector => document.querySelector(selector);
 const base = import.meta.env.BASE_URL;
+const catalogURL = import.meta.env.VITE_CATALOG_URL || base + 'data/catalog.json';
 const mediaURL = path => { if (!path) return ''; if (/^https:\/\//.test(path)) return safeURL(path) || ''; return new URL(base + path, location.href.split('#')[0]).href; };
 let items = [], filtered = [], limit = 24, current = null, modalItems = [], lastFocus, toastTimer;
 const filters = { kind: 'all', query: '', source: '', model: '', method: '', tag: '' };
@@ -31,6 +34,33 @@ const sticky = startStickyFilters();
 
 const copyIcon = icon('copy');
 const filterUI = startCompactFilters({ getFilters: () => filters, apply(values) { Object.assign(filters, values); applyFilters(); } });
+const heart='<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg>';
+let rankingCounts=null;
+function updateLikeButton(button,id) {
+  const state=likes.states.get(id),busy=likes.pending.has(id);
+  button.innerHTML=heart+`<span>${state ? new Intl.NumberFormat('zh-CN',{notation:state.count>=10000?'compact':'standard',maximumFractionDigits:1}).format(state.count) : '…'}</span>`;
+  button.setAttribute('aria-pressed',String(state?.liked || false));button.setAttribute('aria-busy',String(busy));button.disabled=busy;
+  button.setAttribute('aria-label',(state?.liked?'取消点赞':'点赞此作品')+(state?`，${state.count} 个赞`:''));
+  button.title=state?.liked?'取消点赞':'点赞此作品';
+}
+function refreshLikeButtons(id) {document.querySelectorAll('[data-like]').forEach(button=>{if(button.dataset.like===id)updateLikeButton(button,id);});}
+const likes=createLikesClient({api:import.meta.env.VITE_LIKES_URL || 'https://gloria-likes-seasnake-1011.elatedeel.chatgpt.site',
+  onChange(id,state){if(rankingCounts)rankingCounts.set(id,state.count);refreshLikeButtons(id);},onBusy:refreshLikeButtons});
+const detailLike=document.createElement('button');detailLike.className='work-like';$('.work-topline').append(detailLike);
+const sortControl=document.createElement('label');sortControl.className='sort-control';sortControl.innerHTML='<select id="sort-order" aria-label="作品排序"><option value="recent">最近收录</option><option value="popular">最多点赞</option></select><span>'+icon('chevron')+'</span>';
+$('.search-actions').append(sortControl);
+$('.archive-footnote').textContent+=' 点赞按当前浏览器记录；更换设备或清空浏览器数据后可能再次点赞。';
+const workImage=document.createElement('img');workImage.id='work-image';workImage.hidden=true;$('.work-media').insertBefore(workImage,$('.video-surface'));
+const imageNav=document.createElement('div');imageNav.className='image-navigation';imageNav.hidden=true;imageNav.innerHTML='<button data-image-step="-1" aria-label="上一张图片">上一张</button><span></span><button data-image-step="1" aria-label="下一张图片">下一张</button>';
+$('.work-media').insertBefore(imageNav,$('#media-caption'));
+let imageIndex=0;
+function imageURLs(item){return (item.images?.length?item.images:[item.cover]).map(mediaURL).filter(Boolean);}
+function showImage(item){const urls=imageURLs(item);imageIndex=Math.max(0,Math.min(imageIndex,urls.length-1));workImage.hidden=!urls.length;if(urls.length)workImage.src=urls[imageIndex];workImage.alt=item.title;imageNav.hidden=urls.length<2;imageNav.querySelector('span').textContent=`${imageIndex+1} / ${urls.length}`;imageNav.querySelector('[data-image-step="-1"]').disabled=imageIndex===0;imageNav.querySelector('[data-image-step="1"]').disabled=imageIndex===urls.length-1;$('#media-caption').textContent=`图片 ${imageIndex+1} / ${urls.length} · 作品及提示词权利归原作者所有`;}
+imageNav.addEventListener('click',event=>{const button=event.target.closest('[data-image-step]');if(current&&button){imageIndex+=Number(button.dataset.imageStep);$('#video-error').hidden=true;showImage(current);}});
+workImage.addEventListener('load',()=>{if(current&&!current.video)updateVideoLayout(workImage.naturalWidth,workImage.naturalHeight);});
+workImage.addEventListener('error',()=>{if(current&&!current.video&&workImage.hasAttribute('src'))$('#video-error').hidden=false;});
+$('#sort-order').addEventListener('change',async()=>{const select=$('#sort-order');if(select.value==='popular'){select.disabled=true;try{rankingCounts=await likes.ranking();}catch(error){select.value='recent';toast(error.message);}finally{select.disabled=false;}}applyFilters();});
+document.addEventListener('click',async event=>{const button=event.target.closest('[data-like]');if(!button)return;event.preventDefault();event.stopPropagation();try{await likes.toggle(button.dataset.like);}catch(error){toast(error.message || '点赞暂时不可用，请稍后重试。');}});
 function copyWork(item) {
   if (item.prompt) copy(item.prompt, '提示词已复制');
   else copy(new URL(`#work/${encodeURIComponent(item.id)}`, location.href).href, '这条作品没有原始提示词，已复制作品链接');
@@ -40,17 +70,20 @@ const detailTransition = createDetailTransition($('.work-layout'));
 function card(item) {
   const article = document.createElement('article'); article.className = 'work-card'; article.dataset.id = item.id;
   article.innerHTML = `<div class="card-glass"><button class="card-open" data-open="${esc(item.id)}" aria-label="查看作品：${esc(item.title)}"><span class="card-media" style="--ratio:${item.width}/${item.height}"><span class="card-placeholder" aria-hidden="true"><span class="placeholder-mark">${icon("sparkle")}</span><span class="placeholder-title">${esc(item.title)}</span><span class="placeholder-lines"><i></i><i></i></span></span><img alt="${esc(item.title)}" width="${item.width}" height="${item.height}" decoding="async"><span class="card-error"><strong>封面暂未就绪</strong><span>可打开作品查看视频</span></span></span><span class="card-info"><span class="card-title">${esc(item.title)}</span><span class="card-description">${esc(summaryFor(item))}</span><span class="card-caption">${esc(item.source)} · ${esc(item.model)}</span></span></button><button class="card-copy" data-copy="${esc(item.id)}" aria-label="${item.prompt ? '复制提示词' : '复制作品链接'}：${esc(item.title)}" title="${item.prompt ? '复制提示词' : '复制作品链接'}">${copyIcon}</button></div>`;
+  const like=document.createElement('button');like.className='card-like';like.dataset.like=item.id;article.querySelector('.card-glass').append(like);updateLikeButton(like,item.id);
   covers.observe(article, item);
   return article;
 }
 function render(append = false) {
   filtered = filterItems(items, filters);
+  if($('#sort-order').value==='popular'&&rankingCounts)filtered.sort((a,b)=>(rankingCounts.get(b.id)||0)-(rankingCounts.get(a.id)||0)||(a.order||0)-(b.order||0));
   const gallery = $('#gallery');
   const before = append ? gallery.children.length : 0;
   if (!append) { covers.clear(gallery); gallery.replaceChildren(); }
   const fragment = document.createDocumentFragment();
   filtered.slice(before, limit).forEach((item, i) => fragment.append(card(item, before + i)));
   gallery.append(fragment);
+  likes.load(filtered.slice(before,limit).map(item=>item.id)).catch(()=>{gallery.querySelectorAll('[data-like]').forEach(button=>{if(!likes.states.has(button.dataset.like)){button.title='点赞数暂未加载，点击重试';button.querySelector('span').textContent='·';}});});
   masonry.layout();
   $('#empty-state').hidden = !!filtered.length || !items.length;
   $('#result-count').textContent = `${filtered.length} 个作品`;
@@ -102,11 +135,16 @@ window.addEventListener('resize', () => {
 });
 function setVideo(item) {
   video.pause(); video.removeAttribute('src'); video.load();
+  workImage.removeAttribute('src');workImage.hidden=true;imageNav.hidden=true;imageIndex=0;
   $('#video-error').hidden = true;
   updateVideoLayout(item.width, item.height);
   video.poster = mediaURL(item.cover); video.preload = 'metadata';
   const url = mediaURL(item.video);
-  if (url) { video.src = url; video.load(); } else { $('#video-error').hidden = false; }
+  $('.video-surface').hidden=!url;
+  $('#video-error p').textContent=url?'视频暂时无法播放。':'图片暂时无法加载。';$('#retry-video').textContent=url?'重新加载视频':'重新加载图片';
+  if (url) { video.src = url; video.load();$('#media-caption').textContent='点击播放视频 · 作品及提示词权利归原作者所有'; }
+  else if(imageURLs(item).length)showImage(item);
+  else{$('#video-error p').textContent='这条收录暂无可展示的媒体。';$('#video-error').hidden=false;}
 }
 function openWork(id, push = false) {
   const item = items.find(item => item.id === id); if (!item) return;
@@ -128,6 +166,7 @@ function openWork(id, push = false) {
   $('#parameters-text').textContent = [`${item.width} × ${item.height} · ${item.duration ? item.duration + ' 秒' : '时长未标注'}`, item.parameters].filter(Boolean).join('\n\n');
   const source = safeURL(item.sourceUrl); $('#source-link').hidden = !source; if (source) $('#source-link').href = source;
   $('#media-caption').textContent = '点击播放视频 · 作品及提示词权利归原作者所有';
+  detailLike.dataset.like=item.id;updateLikeButton(detailLike,item.id);likes.load([item.id],true).catch(()=>{});
   setVideo(item);
   $('.work-info').scrollTop = 0;
   if (!dialog.open) dialog.showModal();
@@ -137,6 +176,7 @@ function openWork(id, push = false) {
 function closeWork(updateURL = true) {
   detailTransition.cancel();
   video.pause(); video.removeAttribute('src'); video.removeAttribute('poster'); video.load(); current = null;
+  workImage.removeAttribute('src');detailLike.removeAttribute('data-like');
   if (dialog.open) dialog.close();
   if (updateURL && location.hash.startsWith('#work/')) {
     // Back returns to the exact scroll position and filters that opened this item.
@@ -170,7 +210,7 @@ $('#retry-video').addEventListener('click', async () => {
   const id = current.id;
   const button = $('#retry-video'); button.disabled = true;
   try {
-    const response = await fetch(base + 'data/catalog.json', { cache: 'reload' });
+    const response = await fetch(catalogURL, { cache: 'reload' });
     if (response.ok) {
       const latest = await response.json();
       const updated = latest.items?.find(item => item.id === id);
@@ -195,7 +235,7 @@ window.addEventListener('popstate', readHash);
 async function loadCatalog() {
   $('#catalog-error').hidden = true; $('#result-count').textContent = '正在整理影像…';
   try {
-    const response = await fetch(base + 'data/catalog.json', { cache: 'no-cache' }); if (!response.ok) throw new Error('catalog');
+    const response = await fetch(catalogURL, { cache: 'no-cache' }); if (!response.ok) throw new Error('catalog');
     const catalog = await response.json(); if (catalog.schemaVersion !== 1 || !Array.isArray(catalog.items) || catalog.count !== catalog.items.length) throw new Error('schema');
     items = catalog.items.map(item => ({ ...item, width: item.width || 4, height: item.height || 3 }));
     const prompts = items.filter(item => item.prompt).length;

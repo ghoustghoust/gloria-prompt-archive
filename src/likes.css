@@ -1,0 +1,19 @@
+.card-like,.work-like {display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:7px 10px;border-radius:12px;border:1px solid #ffffff30;color:#e9f1ff;background:#101a30dc;box-shadow:inset 0 1px 0 #ffffff18;cursor:pointer;font-size:12px;line-height:1;}
+.card-like {position:absolute;top:10px;left:10px;z-index:5;backdrop-filter:blur(10px);}
+.card-like .ui-icon,.work-like .ui-icon {width:17px;height:17px;flex-basis:17px;}
+.card-like[aria-pressed=true],.work-like[aria-pressed=true] {color:#accdff;background:#1c3c6be8;border-color:#91bbff90;}
+.card-like[aria-pressed=true] path,.work-like[aria-pressed=true] path {fill:currentColor;}
+.card-like:disabled,.work-like:disabled {opacity:.65;cursor:wait;}
+.card-like:focus-visible,.work-like:focus-visible,.sort-control select:focus-visible {outline:2px solid #94beff;outline-offset:3px;}
+.work-topline {display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.sort-control {display:inline-flex;position:relative;align-items:center;min-width:104px;flex-shrink:0;}
+.sort-control select {appearance:none;height:42px;width:100%;padding:0 30px 0 12px;border:1px solid var(--glass-line);border-radius:15px;background:var(--glass-control);color:var(--glass-ink);font-size:12px;cursor:pointer;}
+.sort-control>span {position:absolute;right:9px;pointer-events:none;}
+.sort-control .ui-icon {width:15px;height:15px;}
+@media(max-width:540px){.search-actions{flex-wrap:wrap;}.search-box{flex:1 1 calc(100% - 80px);}.sort-control{margin-left:auto;}.filter-summary{margin-top:8px;}}
+#work-image {display:block;width:100%;max-height:78dvh;object-fit:contain;border-radius:18px;}
+#work-image[hidden] {display:none;}
+.video-surface[hidden] {display:none!important;}
+.image-navigation {display:flex;justify-content:center;align-items:center;gap:14px;margin-top:12px;}
+.image-navigation button {border:1px solid var(--glass-line);border-radius:10px;color:var(--glass-ink);background:var(--glass-control);padding:7px 12px;}
+.image-navigation[hidden] {display:none;}

@@ -141,6 +141,7 @@ def build_catalog(records, urls, fields):
             'tags': options(f.get('风格标签')), 'status': text(f.get('状态')),
             'parameters': parameters, 'createdAt': created,
             'cover': covers[0] if covers else '', 'video': videos[0] if videos else public_url(f.get('视频链接')) or '',
+            'images': covers if not videos and not public_url(f.get('视频链接')) else [],
             'references': media('参考图'), 'width': width, 'height': height, 'aspectKnown': known, 'duration': 0,
         })
     output.sort(key=lambda x: str(x.get('createdAt') or ''), reverse=True)
@@ -193,6 +194,10 @@ def main():
     temp = out.with_suffix('.tmp')
     temp.write_text(json.dumps(catalog, ensure_ascii=False, separators=(',', ':')) + '\n')
     temp.replace(out)
+    id_file = out.with_name('work-ids.json')
+    id_temp = id_file.with_suffix('.tmp')
+    id_temp.write_text(json.dumps({'updatedAt': catalog['updatedAt'], 'ids': [item['id'] for item in catalog['items']]}, separators=(',', ':')) + '\n')
+    id_temp.replace(id_file)
     print(f'Synchronized {len(records)} works and {len(urls)} media links. No media files downloaded.')
 
 if __name__ == '__main__':
