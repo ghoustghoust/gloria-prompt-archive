@@ -72,7 +72,7 @@ Actions 使用仓库 Secrets：`LARK_APP_ID`、`LARK_APP_SECRET`、`LARK_BASE_TO
 
 ## 版本记录与回退
 
-只调整界面时，可手动运行 `Rebuild gallery presentation`：复用仍有至少两小时有效期的线上目录，避免重刷整库媒体链接；可同时补齐缺失的提示词出处截图。常规内容同步与每六小时的链接续期仍由 `Publish GitHub Pages` 执行。
+只调整界面时，可手动运行 `Rebuild gallery presentation`：复用仍有至少两小时有效期的线上目录，避免重刷整库媒体链接；可同时用已入库的生成结果补齐缺失的作品封面；出处截图只在来源附件中展示。常规内容同步与每六小时的链接续期仍由 `Publish GitHub Pages` 执行。
 
 每次内容发布和源码修改保留 Git 提交记录；首次完整站点标记为 `v1.0.0`。仓库 **Commits** 查看改动，**Actions** 查看构建与部署结果。要恢复某次修改之前的状态，使用 `git revert <提交ID>` 后推送 `main`，会留下回退记录并重新部署。不要只改 URL 中的版本数字。
 

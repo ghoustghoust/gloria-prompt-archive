@@ -6,12 +6,19 @@ spec = importlib.util.spec_from_file_location('sync', Path(__file__).parents[1] 
 sync = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(sync)
 class SyncTests(unittest.TestCase):
-    def test_prompt_source_screenshots_supply_a_cover_and_keep_their_role(self):
+    def test_prompt_source_screenshots_are_evidence_and_not_work_covers(self):
         records=[{'record_id':'linuxdo-206','fields':{'作品名称':'城市宣传海报提示词出处截图','关联图片':[{'file_token':'one'},{'file_token':'two'}]}}]
         item=sync.build_catalog(records,{'one':'https://example.com/one.png','two':'https://example.com/two.png'},[])['items'][0]
-        self.assertEqual(item['cover'],'https://example.com/one.png')
-        self.assertEqual(item['images'],['https://example.com/one.png','https://example.com/two.png'])
-        self.assertEqual(item['imageCaptions'],['提示词出处截图','提示词出处截图'])
+        self.assertEqual(item['cover'],'')
+        self.assertEqual(item['images'],[])
+        self.assertEqual(item['sourceImages'],['https://example.com/one.png','https://example.com/two.png'])
+    def test_generated_supplement_keeps_its_provenance_and_source_evidence(self):
+        records=[{'record_id':'supplement','fields':{'封面':[{'file_token':'cover'}],'关联图片':[{'file_token':'proof'}],'复现笔记':'【本站补图】依据原提示词生成'}}]
+        item=sync.build_catalog(records,{'cover':'https://example.com/cover.png','proof':'https://example.com/proof.png'},[])['items'][0]
+        self.assertTrue(item['generatedCover'])
+        self.assertIn('非原作者原图',item['imageCaptions'][0])
+        self.assertEqual(item['images'],['https://example.com/cover.png'])
+        self.assertEqual(item['sourceImages'],['https://example.com/proof.png'])
     def test_image_cases_keep_every_display_image_without_a_video(self):
         records=[{'record_id':'image-case','fields':{'作品名称':'two images','封面':[{'file_token':'a'},{'file_token':'b'}],'参考图':[{'file_token':'ref'}]}},
                  {'record_id':'video-case','fields':{'封面':[{'file_token':'a'}],'对应视频':[{'file_token':'video'}]}}]

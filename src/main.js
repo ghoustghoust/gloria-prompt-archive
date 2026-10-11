@@ -53,6 +53,7 @@ $('.archive-footnote').textContent+=' 点赞按当前浏览器记录；更换设
 const workImage=document.createElement('img');workImage.id='work-image';workImage.hidden=true;$('.work-media').insertBefore(workImage,$('.video-surface'));
 const imageNav=document.createElement('div');imageNav.className='image-navigation';imageNav.hidden=true;imageNav.innerHTML='<button data-image-step="-1" aria-label="上一张图片">上一张</button><span></span><button data-image-step="1" aria-label="下一张图片">下一张</button>';
 $('.work-media').insertBefore(imageNav,$('#media-caption'));
+const sourceEvidence=document.createElement('details');sourceEvidence.className='source-evidence';sourceEvidence.innerHTML='<summary>提示词出处截图</summary><div class="source-evidence-images"></div>';$('#parameters-section').before(sourceEvidence);
 let imageIndex=0;
 function imageURLs(item){return (item.images?.length?item.images:[item.cover]).map(mediaURL).filter(Boolean);}
 function showImage(item){const urls=imageURLs(item);imageIndex=Math.max(0,Math.min(imageIndex,urls.length-1));workImage.hidden=!urls.length;if(urls.length)workImage.src=urls[imageIndex];workImage.alt=item.title;imageNav.hidden=urls.length<2;imageNav.querySelector('span').textContent=`${imageIndex+1} / ${urls.length}`;imageNav.querySelector('[data-image-step="-1"]').disabled=imageIndex===0;imageNav.querySelector('[data-image-step="1"]').disabled=imageIndex===urls.length-1;$('#media-caption').textContent=`${item.imageCaptions?.[imageIndex] || '图片'} ${imageIndex+1} / ${urls.length} · 作品及提示词权利归原作者所有`;}
@@ -70,6 +71,7 @@ function card(item) {
   const article = document.createElement('article'); article.className = 'work-card'; article.dataset.id = item.id;
   article.innerHTML = `<div class="card-glass"><button class="card-open" data-open="${esc(item.id)}" aria-label="查看作品：${esc(item.title)}"><span class="card-media" style="--ratio:${item.width}/${item.height}"><span class="card-placeholder" aria-hidden="true"><span class="placeholder-mark">${icon("sparkle")}</span><span class="placeholder-title">${esc(item.title)}</span><span class="placeholder-lines"><i></i><i></i></span></span><img alt="${esc(item.title)}" width="${item.width}" height="${item.height}" decoding="async"><span class="card-error"><strong>封面暂未就绪</strong><span>可打开作品查看视频</span></span></span><span class="card-info"><span class="card-title">${esc(item.title)}</span><span class="card-description">${esc(summaryFor(item))}</span><span class="card-caption">${esc(item.source)} · ${esc(item.model)}</span></span></button><button class="card-copy" data-copy="${esc(item.id)}" aria-label="${item.prompt ? '复制提示词' : '复制作品链接'}：${esc(item.title)}" title="${item.prompt ? '复制提示词' : '复制作品链接'}">${copyIcon}</button></div>`;
   const like=document.createElement('button');like.className='card-like';like.dataset.like=item.id;article.querySelector('.card-glass').append(like);updateLikeButton(like,item.id);
+  if(item.generatedCover){const badge=document.createElement('span');badge.className='generated-cover-badge';badge.textContent='本站补图';article.querySelector('.card-media').append(badge);}
   covers.observe(article, item);
   return article;
 }
@@ -153,7 +155,9 @@ function openWork(id, push = false) {
   $('#work-position').textContent = `${String(position + 1).padStart(2, '0')} / ${String(modalItems.length).padStart(2, '0')}`;
   $('#work-kind').textContent = titleForKind(item.kind);
   $('#work-title').textContent = item.title;
-  $('#work-credit').textContent = [item.author, item.source].filter(Boolean).join(' · ');
+  $('#work-credit').textContent = [item.generatedCover&&'提示词来源',item.author, item.source].filter(Boolean).join(' · ');
+  sourceEvidence.hidden=!item.sourceImages?.length;sourceEvidence.open=false;
+  sourceEvidence.querySelector('div').innerHTML=(item.sourceImages || []).map(url=>mediaURL(url)).filter(Boolean).map((url,index)=>`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer"><img src="${esc(url)}" alt="提示词出处截图 ${index+1}" loading="lazy"></a>`).join('');
   $('#work-tags').innerHTML = item.tags.map(tag => `<span>${esc(tag)}</span>`).join('');
   $('#work-facts').innerHTML = [['模型', item.model], ['生成方式', item.method], ['模型版本', item.modelVersion || '待确认']].map(([label, value]) => `<div><dt>${label}</dt><dd>${esc(value)}</dd></div>`).join('');
   $('#prompt-title').textContent = item.prompt ? '提示词' : '效果说明';

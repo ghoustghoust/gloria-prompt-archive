@@ -124,8 +124,9 @@ def build_catalog(records, urls, fields):
             return [urls[a['file_token']] for a in f.get(name, []) if isinstance(a, dict) and a.get('file_token') in urls]
         covers, videos, screenshots = media('封面'), media('对应视频'), media('关联图片')
         video_url = videos[0] if videos else public_url(f.get('视频链接')) or ''
-        display_images = list(dict.fromkeys(covers + screenshots)) if not video_url else []
+        display_images = list(dict.fromkeys(covers)) if not video_url else []
         prompt, notes, parameters = text(f.get('提示词')), text(f.get('复现笔记')), text(f.get('生成参数'))
+        generated_cover = '【本站补图】' in notes
         description = re.search(r'效果说明[：:]\s*(.+?)(?:\n\s*\n|$)', notes, re.S)
         usage = re.search(r'适合用途[：:]\s*([^\n]+)', notes)
         width, height, known = dimensions(parameters)
@@ -142,9 +143,10 @@ def build_catalog(records, urls, fields):
             'modelVersion': text(f.get('模型版本')), 'method': text(f.get('生成方式')) or '待确认',
             'tags': options(f.get('风格标签')), 'status': text(f.get('状态')),
             'parameters': parameters, 'createdAt': created,
-            'cover': covers[0] if covers else screenshots[0] if screenshots and not video_url else '', 'video': video_url,
+            'cover': covers[0] if covers else '', 'video': video_url,
             'images': display_images,
-            'imageCaptions': ['作品图片' if url in covers else '提示词出处截图' for url in display_images],
+            'imageCaptions': ['本站补图 · 按收录提示词生成，非原作者原图' if generated_cover else '作品图片' for url in display_images],
+            'generatedCover': generated_cover, 'sourceImages': screenshots,
             'references': media('参考图'), 'width': width, 'height': height, 'aspectKnown': known, 'duration': 0,
         })
     output.sort(key=lambda x: str(x.get('createdAt') or ''), reverse=True)
