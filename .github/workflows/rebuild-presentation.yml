@@ -1,0 +1,43 @@
+name: Rebuild gallery presentation
+on:
+  workflow_dispatch:
+    inputs:
+      media_patch:
+        description: 'Optional JSON patch for missing screenshot covers'
+        required: false
+        default: '[]'
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: presentation
+  cancel-in-progress: false
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Reuse the current verified catalog
+        env:
+          CATALOG_MEDIA_PATCH: ${{ inputs.media_patch }}
+        run: node scripts/rebuild-published-catalog.mjs
+      - run: npm run build
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
