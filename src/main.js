@@ -3,6 +3,7 @@ import './liquid-glass.css';
 import './compact-ui.css';
 import './likes.css';
 import { createLikesClient } from './likes-client.js';
+import { createSortControl } from './sort-control.js';
 import { icon, mountIcons } from './icons.js';
 import { startCompactFilters } from './compact-filters.js';
 import { startWorkSwipe } from './work-swipe.js';
@@ -47,19 +48,17 @@ function refreshLikeButtons(id) {document.querySelectorAll('[data-like]').forEac
 const likes=createLikesClient({api:import.meta.env.VITE_LIKES_URL || 'https://gloria-likes-seasnake-1011.elatedeel.chatgpt.site',
   onChange(id,state){if(rankingCounts)rankingCounts.set(id,state.count);refreshLikeButtons(id);},onBusy:refreshLikeButtons});
 const detailLike=document.createElement('button');detailLike.className='work-like';$('.work-topline').append(detailLike);
-const sortControl=document.createElement('label');sortControl.className='sort-control';sortControl.innerHTML='<select id="sort-order" aria-label="作品排序"><option value="recent">最近收录</option><option value="popular">最多点赞</option></select><span>'+icon('chevron')+'</span>';
-$('.search-actions').append(sortControl);
+const sortControl=createSortControl($('.search-actions'),async value=>{if(value==='popular'){sortControl.busy=true;try{rankingCounts=await likes.ranking();}catch(error){sortControl.value='recent';toast(error.message);}finally{sortControl.busy=false;}}applyFilters();});
 $('.archive-footnote').textContent+=' 点赞按当前浏览器记录；更换设备或清空浏览器数据后可能再次点赞。';
 const workImage=document.createElement('img');workImage.id='work-image';workImage.hidden=true;$('.work-media').insertBefore(workImage,$('.video-surface'));
 const imageNav=document.createElement('div');imageNav.className='image-navigation';imageNav.hidden=true;imageNav.innerHTML='<button data-image-step="-1" aria-label="上一张图片">上一张</button><span></span><button data-image-step="1" aria-label="下一张图片">下一张</button>';
 $('.work-media').insertBefore(imageNav,$('#media-caption'));
 let imageIndex=0;
 function imageURLs(item){return (item.images?.length?item.images:[item.cover]).map(mediaURL).filter(Boolean);}
-function showImage(item){const urls=imageURLs(item);imageIndex=Math.max(0,Math.min(imageIndex,urls.length-1));workImage.hidden=!urls.length;if(urls.length)workImage.src=urls[imageIndex];workImage.alt=item.title;imageNav.hidden=urls.length<2;imageNav.querySelector('span').textContent=`${imageIndex+1} / ${urls.length}`;imageNav.querySelector('[data-image-step="-1"]').disabled=imageIndex===0;imageNav.querySelector('[data-image-step="1"]').disabled=imageIndex===urls.length-1;$('#media-caption').textContent=`图片 ${imageIndex+1} / ${urls.length} · 作品及提示词权利归原作者所有`;}
+function showImage(item){const urls=imageURLs(item);imageIndex=Math.max(0,Math.min(imageIndex,urls.length-1));workImage.hidden=!urls.length;if(urls.length)workImage.src=urls[imageIndex];workImage.alt=item.title;imageNav.hidden=urls.length<2;imageNav.querySelector('span').textContent=`${imageIndex+1} / ${urls.length}`;imageNav.querySelector('[data-image-step="-1"]').disabled=imageIndex===0;imageNav.querySelector('[data-image-step="1"]').disabled=imageIndex===urls.length-1;$('#media-caption').textContent=`${item.imageCaptions?.[imageIndex] || '图片'} ${imageIndex+1} / ${urls.length} · 作品及提示词权利归原作者所有`;}
 imageNav.addEventListener('click',event=>{const button=event.target.closest('[data-image-step]');if(current&&button){imageIndex+=Number(button.dataset.imageStep);$('#video-error').hidden=true;showImage(current);}});
 workImage.addEventListener('load',()=>{if(current&&!current.video)updateVideoLayout(workImage.naturalWidth,workImage.naturalHeight);});
 workImage.addEventListener('error',()=>{if(current&&!current.video&&workImage.hasAttribute('src'))$('#video-error').hidden=false;});
-$('#sort-order').addEventListener('change',async()=>{const select=$('#sort-order');if(select.value==='popular'){select.disabled=true;try{rankingCounts=await likes.ranking();}catch(error){select.value='recent';toast(error.message);}finally{select.disabled=false;}}applyFilters();});
 document.addEventListener('click',async event=>{const button=event.target.closest('[data-like]');if(!button)return;event.preventDefault();event.stopPropagation();try{await likes.toggle(button.dataset.like);}catch(error){toast(error.message || '点赞暂时不可用，请稍后重试。');}});
 function copyWork(item) {
   if (item.prompt) copy(item.prompt, '提示词已复制');
@@ -76,7 +75,7 @@ function card(item) {
 }
 function render(append = false) {
   filtered = filterItems(items, filters);
-  if($('#sort-order').value==='popular'&&rankingCounts)filtered.sort((a,b)=>(rankingCounts.get(b.id)||0)-(rankingCounts.get(a.id)||0)||(a.order||0)-(b.order||0));
+  if(sortControl.value==='popular'&&rankingCounts)filtered.sort((a,b)=>(rankingCounts.get(b.id)||0)-(rankingCounts.get(a.id)||0)||(a.order||0)-(b.order||0));
   const gallery = $('#gallery');
   const before = append ? gallery.children.length : 0;
   if (!append) { covers.clear(gallery); gallery.replaceChildren(); }

@@ -6,6 +6,12 @@ spec = importlib.util.spec_from_file_location('sync', Path(__file__).parents[1] 
 sync = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(sync)
 class SyncTests(unittest.TestCase):
+    def test_prompt_source_screenshots_supply_a_cover_and_keep_their_role(self):
+        records=[{'record_id':'linuxdo-206','fields':{'作品名称':'城市宣传海报提示词出处截图','关联图片':[{'file_token':'one'},{'file_token':'two'}]}}]
+        item=sync.build_catalog(records,{'one':'https://example.com/one.png','two':'https://example.com/two.png'},[])['items'][0]
+        self.assertEqual(item['cover'],'https://example.com/one.png')
+        self.assertEqual(item['images'],['https://example.com/one.png','https://example.com/two.png'])
+        self.assertEqual(item['imageCaptions'],['提示词出处截图','提示词出处截图'])
     def test_image_cases_keep_every_display_image_without_a_video(self):
         records=[{'record_id':'image-case','fields':{'作品名称':'two images','封面':[{'file_token':'a'},{'file_token':'b'}],'参考图':[{'file_token':'ref'}]}},
                  {'record_id':'video-case','fields':{'封面':[{'file_token':'a'}],'对应视频':[{'file_token':'video'}]}}]
