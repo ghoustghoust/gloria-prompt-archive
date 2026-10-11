@@ -56,7 +56,7 @@ $('.work-media').insertBefore(imageNav,$('#media-caption'));
 const sourceEvidence=document.createElement('details');sourceEvidence.className='source-evidence';sourceEvidence.innerHTML='<summary>提示词出处截图</summary><div class="source-evidence-images"></div>';$('#parameters-section').before(sourceEvidence);
 let imageIndex=0;
 function imageURLs(item){return (item.images?.length?item.images:[item.cover]).map(mediaURL).filter(Boolean);}
-function showImage(item){const urls=imageURLs(item);imageIndex=Math.max(0,Math.min(imageIndex,urls.length-1));workImage.hidden=!urls.length;if(urls.length)workImage.src=urls[imageIndex];workImage.alt=item.title;imageNav.hidden=urls.length<2;imageNav.querySelector('span').textContent=`${imageIndex+1} / ${urls.length}`;imageNav.querySelector('[data-image-step="-1"]').disabled=imageIndex===0;imageNav.querySelector('[data-image-step="1"]').disabled=imageIndex===urls.length-1;$('#media-caption').textContent=`${item.imageCaptions?.[imageIndex] || '图片'} ${imageIndex+1} / ${urls.length} · 作品及提示词权利归原作者所有`;}
+function showImage(item){const urls=imageURLs(item);imageIndex=Math.max(0,Math.min(imageIndex,urls.length-1));workImage.hidden=!urls.length;if(urls.length)workImage.src=urls[imageIndex];workImage.alt=item.title;imageNav.hidden=urls.length<2;imageNav.querySelector('span').textContent=`${imageIndex+1} / ${urls.length}`;imageNav.querySelector('[data-image-step="-1"]').disabled=imageIndex===0;imageNav.querySelector('[data-image-step="1"]').disabled=imageIndex===urls.length-1;$('#media-caption').textContent=`${item.imageCaptions?.[imageIndex] || '图片'} ${imageIndex+1} / ${urls.length} · ${item.generatedCover?'提示词来源详见原帖':'作品及提示词权利归原作者所有'}`;}
 imageNav.addEventListener('click',event=>{const button=event.target.closest('[data-image-step]');if(current&&button){imageIndex+=Number(button.dataset.imageStep);$('#video-error').hidden=true;showImage(current);}});
 workImage.addEventListener('load',()=>{if(current&&!current.video)updateVideoLayout(workImage.naturalWidth,workImage.naturalHeight);});
 workImage.addEventListener('error',()=>{if(current&&!current.video&&workImage.hasAttribute('src'))$('#video-error').hidden=false;});
@@ -159,7 +159,7 @@ function openWork(id, push = false) {
   sourceEvidence.hidden=!item.sourceImages?.length;sourceEvidence.open=false;
   sourceEvidence.querySelector('div').innerHTML=(item.sourceImages || []).map(url=>mediaURL(url)).filter(Boolean).map((url,index)=>`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer"><img src="${esc(url)}" alt="提示词出处截图 ${index+1}" loading="lazy"></a>`).join('');
   $('#work-tags').innerHTML = item.tags.map(tag => `<span>${esc(tag)}</span>`).join('');
-  $('#work-facts').innerHTML = [['模型', item.model], ['生成方式', item.method], ['模型版本', item.modelVersion || '待确认']].map(([label, value]) => `<div><dt>${label}</dt><dd>${esc(value)}</dd></div>`).join('');
+  $('#work-facts').innerHTML = [[item.generatedCover?'原帖归档模型':'模型', item.model], [item.generatedCover?'补图方式':'生成方式', item.generatedCover?'本站按提示词生成':item.method], ['模型版本', item.modelVersion || '待确认']].map(([label, value]) => `<div><dt>${label}</dt><dd>${esc(value)}</dd></div>`).join('');
   $('#prompt-title').textContent = item.prompt ? '提示词' : '效果说明';
   $('#prompt-text').textContent = item.prompt || [item.description || '这条收录用于视觉效果参考。', item.usage && `适合用途：${item.usage}`].filter(Boolean).join('\n\n');
   $('#copy-prompt').hidden = !item.prompt;
