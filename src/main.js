@@ -1,3 +1,4 @@
+import { copyText, showManualCopy } from './clipboard.js';
 import './style.css';
 import './liquid-glass.css';
 import './compact-ui.css';
@@ -223,7 +224,7 @@ $('#retry-video').addEventListener('click', async () => {
   finally { button.disabled = false; }
   if (current?.id === id) setVideo(current);
 });
-async function copy(text, message) { try { await navigator.clipboard.writeText(text); toast(message); } catch { toast('复制未成功，请长按或选中文字复制'); } }
+async function copy(text, message) { if (await copyText(text)) toast(message); else showManualCopy(text); }
 $('#copy-prompt').addEventListener('click', () => current?.prompt && copy(current.prompt, '提示词已复制'));
 $('#copy-negative').addEventListener('click', () => current?.negativePrompt && copy(current.negativePrompt, '负面提示词已复制'));
 $('#share-work').addEventListener('click', () => current && copy(new URL(`#work/${current.id}`, location.href).href, '作品链接已复制'));
