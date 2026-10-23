@@ -33,6 +33,8 @@ npm run preview
 
 ## 本次整理结果
 
+2026-10-23 收录 [Vincentwei1021/mg-styles-15](https://github.com/Vincentwei1021/mg-styles-15) 的 15 种 MG 动态设计风格：15 套完整原文提示词、15 个原始示例视频和 15 张封面，归入「Claude Opus 5.5 / 代码生成视频」。提示词与仓库原文件逐条核对，视频全流解码通过，飞书字段与附件回读一致；本批未重新生成，不代表提示词已复现测试。保留作者、源码、预览链接和 [MIT 许可](public/licenses/mg-styles-15-MIT.txt)，全库本次入库后为 8,962 条。
+
 2026-10-08 完成 Opus 5.5 灵感补充：从 [Prompt Motion](https://prompt-motion.com/) 和 [YouMind](https://youmind.com/zh-CN/opus-5-5-prompts/explore?sortBy=views&sortOrder=desc) 收录 481 条作品、489 个视频和 481 张封面，保留原有 6,779 条记录，作品库共 7,260 条。按原帖和完整视频指纹去重；同一视频的两个来源及提示词表述合并保留。3 条仅公开 Skill、1 条提示词与视频主题不符，已标为「待整理」；收录验收不代表提示词已经复现测试。
 
 同步后可筛选「模型：Claude Opus 5.5」或「生成方式：代码生成视频」。本站筛选选项来自完整字段定义及全库记录，随下一次成功的 Actions 同步更新；飞书「AI 页面搭建」分享网页使用独立代码，需要另行编辑和发布。
