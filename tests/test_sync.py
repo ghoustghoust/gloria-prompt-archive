@@ -54,6 +54,44 @@ class SyncTests(unittest.TestCase):
         self.assertEqual(sync.dimensions(parameters), (1440, 1440, True))
 
 class MediaRefreshTests(unittest.TestCase):
+    def test_observed_media_error_recovers_in_http_success_or_error_response(self):
+        import io
+        from urllib.error import HTTPError
+        from unittest.mock import Mock
+        for http_error in (False, True):
+            with self.subTest(http_error=http_error):
+                payload = io.BytesIO(b'{"code":90008001,"msg":"private-token"}')
+                first = HTTPError('https://example.com/private-token', 400, 'bad', {}, payload) if http_error else payload
+                gate = Mock()
+                with patch.object(sync, 'urlopen', side_effect=[first, io.BytesIO(b'{"code":0,"data":{}}')]) as opened, patch.object(sync.time, 'sleep') as sleep:
+                    self.assertEqual(sync.request(sync.MEDIA_URL_PATH, 'secret', gate=gate), {'code': 0, 'data': {}})
+                self.assertEqual(opened.call_count, 2)
+                self.assertEqual(gate.wait.call_count, 2)
+                sleep.assert_called_once_with(1)
+
+    def test_persistent_media_error_stops_after_four_attempts_with_safe_diagnostics(self):
+        import io
+        from unittest.mock import Mock
+        gate = Mock()
+        responses = [io.BytesIO(b'{"code":90008001,"msg":"private-token"}') for _ in range(4)]
+        with patch.object(sync, 'urlopen', side_effect=responses) as opened, patch.object(sync.time, 'sleep') as sleep:
+            with self.assertRaisesRegex(RuntimeError, '4 attempts.*90008001.*previous deployment retained') as caught:
+                sync.request(sync.MEDIA_URL_PATH, 'secret', gate=gate)
+        self.assertEqual(opened.call_count, 4)
+        self.assertEqual(gate.wait.call_count, 4)
+        self.assertEqual([call.args[0] for call in sleep.call_args_list], [1, 2, 4])
+        self.assertNotIn('private-token', str(caught.exception))
+
+    def test_permanent_errors_and_other_endpoints_do_not_retry(self):
+        import io
+        for path, code in [(sync.MEDIA_URL_PATH, 1061002), (sync.MEDIA_URL_PATH, 99991679), ('bitable/test', 90008001)]:
+            with self.subTest(path=path, code=code):
+                with patch.object(sync, 'urlopen', return_value=io.BytesIO(('{"code":%s}' % code).encode())) as opened, patch.object(sync.time, 'sleep') as sleep:
+                    with self.assertRaisesRegex(RuntimeError, str(code)):
+                        sync.request(path, 'secret')
+                self.assertEqual(opened.call_count, 1)
+                sleep.assert_not_called()
+
     def test_concurrent_batches_deduplicate_and_keep_complete_results(self):
         import threading
         barrier = threading.Barrier(4)

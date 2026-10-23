@@ -18,6 +18,14 @@ ROOT = Path(__file__).resolve().parents[1]
 API = 'https://open.feishu.cn/open-apis/'
 BASE = os.environ.get('LARK_BASE_TOKEN', 'Fiqwbq0xeahG6RsvP3TcCJgQnNf')
 TABLE = os.environ.get('LARK_TABLE_ID', 'tbl5wfUVflIsVTvv')
+MEDIA_URL_PATH = 'drive/v1/medias/batch_get_tmp_download_url'
+
+
+def retryable_code(path, code):
+    # 90008001 interrupted this read-only endpoint on 2026-10-17, while
+    # later runs of the same revision succeeded. Retry this observed failure
+    # only here; do not treat unknown API errors or permission failures as transient.
+    return code in (99991400, 99991401) or (path == MEDIA_URL_PATH and code == 90008001)
 
 class RateGate:
     """Share request-start pacing across workers and retries."""
@@ -39,6 +47,7 @@ def request(path, token=None, params=None, body=None, gate=None):
     headers = {'Content-Type': 'application/json'}
     if token:
         headers['Authorization'] = 'Bearer ' + token
+    last_failure = 'unavailable'
     for attempt in range(4):
         if gate is not None:
             gate.wait()
@@ -52,10 +61,14 @@ def request(path, token=None, params=None, body=None, gate=None):
             except (ValueError, OSError, KeyError, AttributeError):
                 detail = {}
             code = detail.get('code')
-            if error.code == 429 or error.code >= 500 or code in (99991400, 99991401):
+            code = code if type(code) is int else None
+            last_failure = f'HTTP {error.code}; API code {code}'
+            if error.code == 429 or error.code >= 500 or retryable_code(path, code):
                 retry_after = error.headers.get('Retry-After', '') if error.headers else ''
                 delay = float(retry_after) if retry_after.isdigit() else 2 ** attempt
-                time.sleep(min(delay, 60)); continue
+                if attempt < 3:
+                    time.sleep(min(delay, 60))
+                continue
             # Log only numeric codes and request IDs, never request URLs or response bodies.
             request_id = error.headers.get('X-Tt-Logid', '') if error.headers else ''
             request_id = re.sub(r'[^a-zA-Z0-9_-]', '', request_id)[:100]
@@ -63,12 +76,17 @@ def request(path, token=None, params=None, body=None, gate=None):
         except (URLError, TimeoutError):
             if attempt == 3: raise RuntimeError('Feishu connection failed; previous deployment retained') from None
             time.sleep(2 ** attempt); continue
-        if result.get('code') in (99991400, 99991401):
-            time.sleep(2 ** attempt); continue
-        if result.get('code') != 0:
-            raise RuntimeError(f'Feishu API error {result.get("code")}; operation {path.split("/")[0]}')
+        code = result.get('code')
+        code = code if type(code) is int else None
+        if retryable_code(path, code):
+            last_failure = f'API code {code}'
+            if attempt < 3:
+                time.sleep(2 ** attempt)
+            continue
+        if code != 0:
+            raise RuntimeError(f'Feishu API error {code}; operation {path.split("/")[0]}')
         return result
-    raise RuntimeError('Feishu retry limit reached')
+    raise RuntimeError(f'Feishu retry limit reached after 4 attempts; {last_failure}; operation {path.split("/")[0]}; previous deployment retained')
 
 def pages(path, token):
     cursor = None
@@ -163,7 +181,7 @@ def refresh_media_urls(tokens, token):
     started = time.monotonic()
 
     def fetch(batch):
-        data = request('drive/v1/medias/batch_get_tmp_download_url', token,
+        data = request(MEDIA_URL_PATH, token,
                        params={'file_tokens': batch, 'extra': json.dumps({'bitablePerm': {'tableId': TABLE}})},
                        gate=gate)['data']
         urls = {item['file_token']: item['tmp_download_url']
