@@ -45,7 +45,11 @@ const badge = (name, label, message) => fs.writeFileSync(path.join(out, 'badges'
 badge('works', '收录', `${number(records.length)} 条`);
 badge('prompts', '完整提示词', `${number(withPrompt)} 条`);
 badge('updated', '最近同步', day(catalog.updatedAt));
-fs.writeFileSync(path.join(out, 'stats.svg'), statsSVG(library));
+badge('works-en', 'works', number(records.length));
+badge('prompts-en', 'full prompts', number(withPrompt));
+badge('updated-en', 'last sync', day(catalog.updatedAt));
+fs.writeFileSync(path.join(out, 'stats.svg'), statsSVG(library, 'zh'));
+fs.writeFileSync(path.join(out, 'stats-en.svg'), statsSVG(library, 'en'));
 
 const top = (key, limit = 99) => [...library.facets[key]].slice(0, limit).map(([name, count]) => `${name} (${number(count)})`).join(', ');
 const mb = (Buffer.byteLength(text) / 1048576).toFixed(0);

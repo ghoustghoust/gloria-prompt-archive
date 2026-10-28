@@ -1,6 +1,6 @@
 # 维护说明
 
-给维护这个仓库的人看的：内容怎么同步、界面怎么发布、出了问题怎么回退。用的人看 [README](../README.md) 就够了。
+给维护这个仓库的人看的：内容怎么同步、界面怎么发布、出了问题怎么回退。用的人看 [README](../README.zh-CN.md) 就够了（[English](../README.md)）。
 
 ## 整体怎么连起来
 
@@ -70,8 +70,8 @@ npm run preview    # http://127.0.0.1:5183/ ，看实际构建结果
 | `agent/prompts.json` | 全部作品的全文，一行一条，去掉了媒体链接和参数说明 |
 | `agent/works/<id>.md` | 单条作品的 Markdown |
 | `agent/facets.json` | 各筛选项的数量 |
-| `agent/badges/*.json` | README 顶部徽标（shields.io endpoint 格式） |
-| `agent/stats.svg` | README 里的统计图（`scripts/stats-svg.mjs`） |
+| `agent/badges/*.json` | README 顶部徽标（shields.io endpoint 格式），中文和 `-en` 英文各一套 |
+| `agent/stats.svg`、`agent/stats-en.svg` | README 里的统计图，中英文各一张（`scripts/stats-svg.mjs`） |
 
 两次 Actions 工作流都会生成这些文件，跟网站同步更新。媒体链接不放进去，因为一天就过期。
 

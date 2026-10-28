@@ -107,7 +107,10 @@ test('Build writes agent files from the published catalog without media links', 
   assert.match(llms, /^# 光彩跃然/);
   assert.ok(llms.includes(`> ${catalog.count} AI video and image prompts`));
   assert.ok(llms.includes('https://example.com/gallery/agent/prompts.json'));
-  for (const name of ['works', 'prompts', 'updated']) assert.equal(JSON.parse(fs.readFileSync(path.join(dist, `agent/badges/${name}.json`), 'utf8')).schemaVersion, 1);
-  assert.match(fs.readFileSync(path.join(dist, 'agent/stats.svg'), 'utf8'), /^<svg[^>]+role="img"/);
+  for (const name of ['works', 'prompts', 'updated', 'works-en', 'prompts-en', 'updated-en']) assert.equal(JSON.parse(fs.readFileSync(path.join(dist, `agent/badges/${name}.json`), 'utf8')).schemaVersion, 1);
+  assert.match(fs.readFileSync(path.join(dist, 'agent/stats.svg'), 'utf8'), /^<svg[^>]+role="img"[\s\S]*模型/);
+  const english = fs.readFileSync(path.join(dist, 'agent/stats-en.svg'), 'utf8');
+  assert.match(english, /^<svg[^>]+role="img"[\s\S]*Method/);
+  assert.ok(!/[\u4e00-\u9fff]/.test(english.replace(/即梦/g, '')), 'English chart labels are translated');
   fs.rmSync(dist, { recursive: true, force: true });
 });
