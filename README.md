@@ -1,89 +1,177 @@
+<div align="center">
+
+<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/logo.svg" width="88" alt="SEASNAKE"></a>
+
 # 光彩跃然 · 影像灵感库
 
-SEASNAKE 的提示词与影像收藏站。首页延续蓝色 Three.js 流体、宋体标题、滚动字幕、打字机叙述和官方三角字标。
+**AI 视频和图像提示词的收藏夹，每一条都写着作者和出处。**<br>
+<sub>GLORIA prompt archive: credited prompts for Seedance, GPT Image, Claude Opus and MiniMax, searchable on the web or by your coding agent.</sub>
 
-- 网站：https://seasnakes.github.io/gloria-prompt-archive/
-- 来源：飞书「提示词作品库」的发布快照。
-- 当前同步对象：个人飞书账号下的作品库，数量以页面同步结果为准。
+<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img alt="打开灵感库" src="https://img.shields.io/badge/%E2%96%B6%20%E6%89%93%E5%BC%80%E7%81%B5%E6%84%9F%E5%BA%93-2f6bff?style=for-the-badge"></a>
+<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img alt="收录数量" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fseasnakes.github.io%2Fgloria-prompt-archive%2Fagent%2Fbadges%2Fworks.json&style=for-the-badge"></a>
+<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img alt="完整提示词" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fseasnakes.github.io%2Fgloria-prompt-archive%2Fagent%2Fbadges%2Fprompts.json&style=for-the-badge"></a>
+<a href="https://github.com/seasnakes/gloria-prompt-archive/actions/workflows/pages.yml"><img alt="最近同步" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fseasnakes.github.io%2Fgloria-prompt-archive%2Fagent%2Fbadges%2Fupdated.json&style=for-the-badge"></a>
 
-## 浏览
+<a href="#让-ai-帮你找"><img alt="Agent Skill" src="https://img.shields.io/badge/Agent%20Skill-Claude%20Code%20%C2%B7%20Codex-0b1a33?style=flat-square"></a>
+<a href="#只要-mcp"><img alt="MCP" src="https://img.shields.io/badge/MCP-stdio-0b1a33?style=flat-square"></a>
+<a href="https://seasnakes.github.io/gloria-prompt-archive/llms.txt"><img alt="llms.txt" src="https://img.shields.io/badge/llms.txt-%E2%9C%93-0b1a33?style=flat-square"></a>
+<a href="https://github.com/seasnakes/gloria-prompt-archive/actions/workflows/pages.yml"><img alt="同步状态" src="https://img.shields.io/github/actions/workflow/status/seasnakes/gloria-prompt-archive/pages.yml?branch=main&label=%E6%AF%8F%E5%85%AD%E5%B0%8F%E6%97%B6%E5%90%8C%E6%AD%A5&style=flat-square"></a>
+<a href="https://github.com/seasnakes/gloria-prompt-archive/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/seasnakes/gloria-prompt-archive?style=flat-square&color=f5b700"></a>
+<a href="https://space.bilibili.com/486682682"><img alt="B站" src="https://img.shields.io/badge/B%E7%AB%99-SeASnAkEss-00a1d6?style=flat-square&logo=bilibili&logoColor=white"></a>
+<a href="https://www.zhihu.com/people/SeASnAkE"><img alt="知乎" src="https://img.shields.io/badge/%E7%9F%A5%E4%B9%8E-SeASnAkE-1772f6?style=flat-square&logo=zhihu&logoColor=white"></a>
 
-按关键词、风格、来源、模型和生成方式组合筛选，搜索覆盖全部记录。每次展示 24 个作品，点击「加载更多」继续。打开作品可播放视频，在视频画面、正文或顶部信息栏左右滑动（电脑可拖动、触控板横滑或使用方向键）切换作品，也可查看来源、复制真实提示词及作品链接。卡片右上角可直接复制提示词；没有原始提示词的作品复制其链接。页面固定采用深色主题。
+**新** 2026-10-28 · 不想自己翻，可以让 Claude Code、Codex 替你搜了。[怎么装 ↓](#让-ai-帮你找)
 
-没有原始提示词的作品明确显示「效果参考」，效果说明不会冒充提示词。未知模型和方式保留「待确认」。作品区继续显示动态背景；打开详情时降低背景帧率，切到后台或开启减少动态效果时暂停。
+</div>
 
-## 本地开发
+<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/hero.jpg" alt="光彩跃然首页：蓝色流体背景上的宋体标题"></a>
+
+## 这是什么
+
+我在飞书里攒了一个提示词作品库，这个网站是它的公开版。
+
+收的主要是 AI 视频和图像的提示词。Seedance / 即梦最多，然后是 GPT Image、Claude Opus 5.5 写代码做出来的动画、MiniMax H3。大部分是 X 和 LINUX DO 上的公开帖子，很多是顺着 YouMind、Prompt Motion 这些站点和几个开源仓库成批找来的。每一条都留着作者名字和原帖链接，视频和图在网页上能直接看。
+
+<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="https://seasnakes.github.io/gloria-prompt-archive/agent/stats.svg" alt="收录统计：按模型、生成方式和风格标签"></a>
+
+<sub>这张图和上面的数字跟着网站一起更新。</sub>
+
+收录时守几条规矩：
+
+- 有原始提示词的，收原文。
+- 作者没公开提示词的，标「效果参考」，只写效果，不编一段提示词充数。
+- 原帖没写模型或生成方式的，标「待确认」，不猜。
+- 绝大多数提示词我没有亲手重跑过，标的是「待测试」。效果以原作者的视频为准。
+
+## 在网页上找
+
+<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/gallery.jpg" alt="画廊：瀑布流卡片，顶部是搜索框、筛选和排序"></a>
+
+[打开灵感库](https://seasnakes.github.io/gloria-prompt-archive/)，往下滑就是画廊。
+
+- 搜索框会搜标题、提示词全文、作者和标签。提示词大多是英文，中文搜不到就换英文，比如「霓虹」搜不够，再搜 neon。
+- 「筛选」里能按模型、生成方式、来源、风格标签组合着找。
+- 点开一条可以看视频，左右滑切换。卡片右上角一点就复制提示词。
+- 分享某一条，复制作品链接就行，长这样：`…/gloria-prompt-archive/#work/作品ID`。
+
+## 让 AI 帮你找
+
+也可以不打开网页，交给 Claude Code、Codex 这类 agent 去翻。装好以后直接说你要什么：
+
+> 找几个适合咖啡店开业宣传的 Seedance 提示词，要有运镜
+
+> 我想让 Claude 写代码做一段产品发布动画，库里有什么能参考的？
+
+> 随便来五个电影感强的图生视频提示词
+
+它会在库里搜，中文英文都试一遍，读完整的提示词再挑几条给你，附上作品链接和原作者。想改成你自己的主题，接着说就行。
+
+### Claude Code
+
+```bash
+claude plugin marketplace add seasnakes/gloria-prompt-archive
+```
+
+```bash
+claude plugin install gloria-prompts@seasnake
+```
+
+装的是一个 skill 加一个 MCP 服务，三个工具：`search_prompts` 搜索，`get_prompts` 读全文，`list_facets` 列出所有模型、方式和标签。
+
+### Codex、Cursor 和其他 agent
+
+```bash
+npx skills add seasnakes/gloria-prompt-archive
+```
+
+它会问你装到哪些 agent 里（这个工具要 Node 22.20 以上）。也可以手动把 [`plugin/skills/gloria-prompts/`](plugin/skills/gloria-prompts/) 整个文件夹复制到 `~/.agents/skills/`（Codex）或 `~/.claude/skills/`（Claude Code）。
+
+第一次搜索会下载一份数据，大约 8 MB，之后缓存六小时。Codex 默认的沙盒不联网，第一次搜索要你允许它联网。
+
+### 只要 MCP
+
+脚本只有一个文件，不用装依赖，Node 18 以上就能跑：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/seasnakes/gloria-prompt-archive/main/plugin/skills/gloria-prompts/scripts/gloria.mjs -o ~/gloria.mjs
+```
+
+```bash
+codex mcp add gloria-prompts -- node ~/gloria.mjs mcp
+```
+
+Claude Code 用 `claude mcp add gloria-prompts -- node ~/gloria.mjs mcp`。别的客户端照它们的格式填 `node ~/gloria.mjs mcp` 即可。
+
+同一个脚本也能直接在终端里用：
+
+```bash
+node ~/gloria.mjs search 霓虹 雨夜 --model seedance
+```
+
+`node ~/gloria.mjs --help` 看全部参数。
+
+### 什么都不装
+
+网站给 agent 备了纯文本版本，能上网的 agent 直接读就行：
+
+| 地址 | 内容 |
+|---|---|
+| [`llms.txt`](https://seasnakes.github.io/gloria-prompt-archive/llms.txt) | 怎么用，以及所有筛选项 |
+| [`agent/prompts.json`](https://seasnakes.github.io/gloria-prompt-archive/agent/prompts.json) | 全部提示词，一行一条，能直接 `grep` |
+| `agent/works/作品ID.md` | 单条作品，把作品链接里的 `#work/` 换成 `agent/works/`，末尾加 `.md` |
+| [`agent/facets.json`](https://seasnakes.github.io/gloria-prompt-archive/agent/facets.json) | 每个模型、方式、标签各有多少条 |
+
+这些文件和网站同一次构建生成，内容一致。视频和图片链接没放进去，那是飞书的临时链接，一天就过期。要看作品，打开网页链接。
+
+## 数据从哪来
+
+内容在飞书多维表格里维护。GitHub Actions 每六小时读一遍整张表，重新构建网站，所以新收的作品最晚几个小时后出现。
+
+飞书凭据、同步脚本、点赞服务、只改界面时怎么发布、怎么回退，都写在 [docs/MAINTAINING.md](docs/MAINTAINING.md)。
+
+## 本地跑起来
 
 需要 Node.js 22。
 
-```sh
+```bash
 npm ci
+```
+
+```bash
 npm run dev
 ```
 
-本地预览为 `http://127.0.0.1:5182/`。构建验证：
+打开 http://127.0.0.1:5182/ 。仓库里带的是 46 条的小样本，完整数据只在线上。`npm test` 跑测试，`npm run build` 构建，`npm run preview` 在 5183 端口看构建结果。
 
-```sh
-npm test
-npm run build
-npm run preview
-```
+## 更新记录
 
-`preview` 在 5183 端口验证实际产物。GitHub Pages 使用相对资源路径，作品分享采用 `#work/作品ID`，直接打开无需服务器路由。
+- **2026-10-28** · agent 能直接搜库：skill、MCP、`llms.txt` 和单条 Markdown。README 重写。
+- **2026-10-23** · 收进 [Vincentwei1021/mg-styles-15](https://github.com/Vincentwei1021/mg-styles-15) 的 15 种 MG 动画风格，提示词、示例视频、封面都有，[MIT 许可](public/licenses/mg-styles-15-MIT.txt)。
+- **2026-10-11** · 加了匿名点赞和「最多点赞」排序。
+- **2026-10-08** · 从 Prompt Motion 和 YouMind 收进 481 条 Claude Opus 5.5 的作品。
+- **2026-09-19** · 补齐 Seedance 案例的视频和封面。[整理清单](reports/2026-09-19-seedance-import/README.md)
 
-## 本次整理结果
+每次导入的核对细节在 [docs/MAINTAINING.md](docs/MAINTAINING.md#历次导入)。
 
-2026-10-23 收录 [Vincentwei1021/mg-styles-15](https://github.com/Vincentwei1021/mg-styles-15) 的 15 种 MG 动态设计风格：15 套完整原文提示词、15 个原始示例视频和 15 张封面，归入「Claude Opus 5.5 / 代码生成视频」。提示词与仓库原文件逐条核对，视频全流解码通过，飞书字段与附件回读一致；本批未重新生成，不代表提示词已复现测试。保留作者、源码、预览链接和 [MIT 许可](public/licenses/mg-styles-15-MIT.txt)，全库本次入库后为 8,962 条。
+## 版权
 
-2026-10-08 完成 Opus 5.5 灵感补充：从 [Prompt Motion](https://prompt-motion.com/) 和 [YouMind](https://youmind.com/zh-CN/opus-5-5-prompts/explore?sortBy=views&sortOrder=desc) 收录 481 条作品、489 个视频和 481 张封面，保留原有 6,779 条记录，作品库共 7,260 条。按原帖和完整视频指纹去重；同一视频的两个来源及提示词表述合并保留。3 条仅公开 Skill、1 条提示词与视频主题不符，已标为「待整理」；收录验收不代表提示词已经复现测试。
+- 收录的提示词、视频和图片都归原作者。转用时请署上作者，带上原帖链接。
+- 这里只做整理和索引，不保证照着提示词能做出同样的效果。
+- 「光彩跃然」页面的概念来自我的 [CodePen 作品](https://codepen.io/seasnakes/pen/oNJgPeP)。三角字标是 SEASNAKE 的品牌资产，不随仓库授权。
+- 用到的第三方代码和字体：Three.js（[许可](THREE-LICENSE.txt)）、Typed.js（[许可](TYPED-LICENSE.txt)）、Noto Serif SC 子集（[许可](NOTO-SERIF-LICENSE.txt)）。
 
-同步后可筛选「模型：Claude Opus 5.5」或「生成方式：代码生成视频」。本站筛选选项来自完整字段定义及全库记录，随下一次成功的 Actions 同步更新；飞书「AI 页面搭建」分享网页使用独立代码，需要另行编辑和发布。
+## Star History
 
-2026-09-19 完成 Seedance 视频与封面补充：5,924 条补齐成功，69 条持续下载失败记录备份后移除。作品库最终共 6,779 条；本批最终保留 5,944 条 Seedance 案例。详见 [整理结果与公开来源清单](reports/2026-09-19-seedance-import/README.md)。
+<a href="https://www.star-history.com/#seasnakes/gloria-prompt-archive&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=seasnakes/gloria-prompt-archive&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=seasnakes/gloria-prompt-archive&type=Date" />
+   <img alt="Star History" src="https://api.star-history.com/svg?repos=seasnakes/gloria-prompt-archive&type=Date" />
+ </picture>
+</a>
 
-## 从飞书更新
-
-2026-10-11 增加匿名点赞与「最多点赞」排序。点赞保存在独立持久数据库，访问者标识保存在当前站点的浏览器存储；更换设备、入口或清空浏览器数据后可能再次点赞。重复请求只计一次，取消点赞只影响自己的记录。网页仅使用访客自己的随机凭证；后台凭据不进入浏览器。Logo 链接到作者 B站主页。图像案例可查看原图，多图作品可逐张切换。
-
-点赞接口默认使用 `https://gloria-likes-seasnake-1011.elatedeel.chatgpt.site`，本地可用 `VITE_LIKES_URL` 指向测试服务。Toy 构建使用 `VITE_CATALOG_URL` 指向本仓库公开目录，内容同步无需重新上传 Toy 包。
-
-飞书管理内容，GitHub Actions 每六小时及手动运行时读取全库，Pages 展示最新成功同步的结果。它不是逐次访问实时查询；新增作品在下一次同步后出现。
-
-Actions 使用仓库 Secrets：`LARK_APP_ID`、`LARK_APP_SECRET`、`LARK_BASE_TOKEN`、`LARK_TABLE_ID`。飞书应用需有 `bitable:app:readonly` 权限及目标表的读取权限。密钥仅进入 Actions 后端，不进入浏览器或构建产物。
-
-`npm run sync:api` 分页读取全部记录和完整字段选项，以四个并发请求批量换取附件临时链接，每批最多五个附件、所有线程及重试合计每秒最多发起四次请求；日志每完成 100 批显示进度。只发布展示字段及媒体链接，不下载视频或图片。生成的 JSON 只随 Pages 构建产物发布，不提交回仓库；远程模式构建自动排除旧的 `public/media/` 静态附件。
-
-同次构建生成不含正文和媒体链接的 `data/work-ids.json`，用于点赞服务识别新作品。点赞总数不会被内容同步覆盖。
-
-附件临时链接有效期约 24 小时；定时刷新减少过期影响，但 GitHub 定时任务可能延迟。可在 Actions 中手动运行 **Publish GitHub Pages** 刷新。大库逐批获取附件链接可能超过 20 分钟，任务最长允许 90 分钟。同步缺页、权限错误或附件链接不完整时停止部署，保留此前成功版本；连续失败超过链接有效期会影响媒体播放。
-
-2026-10-17 的同步曾在附件链接接口返回 `90008001` 时中断，后续相同版本运行恢复成功。该接口现在对这一已观察到的间歇性错误最多请求四次，等待 1、2、4 秒后重试，且重试仍经过共享限速。持续失败仍会停止部署；参数、权限错误不会因此被重试或忽略。错误日志仅保留数字错误码和安全请求标识，不输出附件 token、签名链接或原始响应正文。
-
-本地运行 `npm run sync:api` 前设置同名环境变量。原 `npm run sync` / `publish` 属于旧的下载附件流程，新方案不再使用。不要提交本地同步生成的带签名链接 JSON。
-
-## 画廊交互
-
-- 等宽卡片按当前最短列排列，保留原始画幅；追加记录沿用同一布局。
-- 整张卡片接近视口 600px 时排队加载封面，最多六张并发；真实图片解码成功后才替换文字骨架。
-- 搜索和分类基于完整目录，筛选选项包含飞书字段的全部定义。搜索栏只保留搜索和筛选入口，收录类型统一放入筛选面板；手机以底部面板展示；选好后点击应用，关闭时丢弃未应用的修改，入口显示已选条件数量。
-- 标题栏高度实时测量，搜索筛选栏与其无缝衔接；向下浏览收起，反向滚动展开。
-- 首页保留鲜明蓝色流体，画廊延续较暗的背景；保留打字机和滚动字幕，移除竖线和圆形装饰。首屏仅统计作品和提示词。图标统一为同一套线性 SVG；卡片标题在电脑端为 17px、手机端为 14px，文字区域按实际内容高度排列。
-- “光彩跃然”随站提供 Noto Serif SC 的四字子集，两端使用相同字形，不依赖手机系统自带字体。许可见 `NOTO-SERIF-LICENSE.txt`。
-- 视频画面上的手势层避开底部原生控制条；点击画面播放/暂停，横滑切换作品，纵向滑动滚动详情。
-- 卡片采用烟灰色液态玻璃、圆润厚边与指针视差；详情前后切换带倾斜缩放和分层过渡，并尊重减少动态效果设置；视频按真实画幅排版，横屏上下排列、电脑竖屏左右排列。播放器不添加黑色舞台，源视频自身的黑边不裁切。
-
-毛玻璃参考 [Abdughafur Khujzoda 的示例](https://codepen.io/Abdughafur-Khujzoda/pen/jEyVvqK)：背景模糊与折射单独分层，文字、封面和视频保持清晰。切换参考 [TheMOZZARELLA 的视差卡片](https://codepen.io/TheMOZZARELLA/pen/OJqrvNo)，采用本地实现，不加载第三方演示或轮播依赖。手机使用轻量毛玻璃；电脑仅对接近视口的卡片启用折射，减少后台渲染负担。
-
-## 版本记录与回退
-
-只调整界面时，可手动运行 `Rebuild gallery presentation`：复用仍有至少两小时有效期的线上目录，避免重刷整库媒体链接；可同时用已入库的生成结果补齐缺失的作品封面；出处截图只在来源附件中展示。常规内容同步与每六小时的链接续期仍由 `Publish GitHub Pages` 执行。
-
-每次内容发布和源码修改保留 Git 提交记录；首次完整站点标记为 `v1.0.0`。仓库 **Commits** 查看改动，**Actions** 查看构建与部署结果。要恢复某次修改之前的状态，使用 `git revert <提交ID>` 后推送 `main`，会留下回退记录并重新部署。不要只改 URL 中的版本数字。
-
-本项目初版复用已验收的 Blue Tears V6 视觉引擎。旧的独立流体 V1–V6 预览不随本仓库发布；网站版本由提交和发布标签管理。
-
-## 来源与权利
-
-- 光彩跃然页面概念沿用 SEASNAKE 的 [CodePen 作品](https://codepen.io/seasnakes/pen/oNJgPeP)。三角字标来自 SEASNAKE 官方品牌资产。
-- 收录视频、图片与提示词权利归各自原作者所有，每条详情保留公共来源链接；本站仅作创作参考汇总，不保证效果或模型参数可复现。
-- Three.js 与 Typed.js 许可分别见 `THREE-LICENSE.txt` 和 `TYPED-LICENSE.txt`。这里未对第三方内容或品牌资产授予额外使用许可。
+<div align="center">
+<br>
+<sub>美人之美，各美其美。美美与共，天下大同。</sub><br>
+<sub>by SEASNAKE · <a href="https://space.bilibili.com/486682682">B站</a> · <a href="https://www.zhihu.com/people/SeASnAkE">知乎</a></sub>
+</div>

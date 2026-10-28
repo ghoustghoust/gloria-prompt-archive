@@ -7,9 +7,11 @@
   <meta name="description" content="光彩跃然，SEASNAKE 的影像灵感库。收藏提示词、视频和视觉效果，沿着一点灵感，走进自己的生命之蓝。">
   <title>光彩跃然 · 影像灵感库</title>
   <link rel="icon" type="image/svg+xml" href="./src/assets/seasnake-logo-triangle.svg">
+  <link rel="alternate" type="text/plain" href="./llms.txt" title="给 AI agent 读的纯文本索引">
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true"><defs><filter id="gloria-glass-refraction" x="0%" y="0%" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.012 0.016" numOctaves="2" seed="21" result="noise"/><feGaussianBlur in="noise" stdDeviation="2" result="softNoise"/><feDisplacementMap in="SourceGraphic" in2="softNoise" scale="36" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
+  <noscript><p>这个页面需要 JavaScript。AI agent 请读 <a href="./llms.txt">llms.txt</a>：全部提示词在 <a href="./agent/prompts.json">agent/prompts.json</a>，单条作品把链接里的 <code>#work/作品ID</code> 换成 <code>agent/works/作品ID.md</code>。</p></noscript>
   <a class="skip-link" href="#archive">跳到影像灵感库</a>
   <div class="ocean-background" data-state="loading" aria-hidden="true"><canvas id="gloria-ocean"></canvas><div class="ocean-veil"></div></div>
   <header class="site-header">

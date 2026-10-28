@@ -1,0 +1,12 @@
+{
+  "name": "seasnake",
+  "owner": { "name": "SEASNAKE", "url": "https://github.com/seasnakes" },
+  "metadata": { "description": "SEASNAKE 的 agent 工具：光彩跃然 · 影像灵感库。" },
+  "plugins": [
+    {
+      "name": "gloria-prompts",
+      "source": "./plugin",
+      "description": "Search 光彩跃然 · 影像灵感库: about 9,000 credited AI video and image prompts, as a skill plus an MCP server."
+    }
+  ]
+}

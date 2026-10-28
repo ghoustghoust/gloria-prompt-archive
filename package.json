@@ -1,16 +1,17 @@
 {
   "name": "gloria-prompt-archive",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 5182 --strictPort",
-    "build": "node scripts/validate.mjs && vite build && node scripts/prune-build-media.mjs",
+    "build": "node scripts/validate.mjs && vite build && node scripts/prune-build-media.mjs && node scripts/build-agent-files.mjs",
     "preview": "vite preview --host 127.0.0.1 --port 5183 --strictPort",
     "test": "node --test tests/*.test.mjs",
     "sync": "python3 scripts/sync_feishu.py",
     "publish": "python3 scripts/publish.py",
-    "sync:api": "python3 scripts/sync_feishu_api.py"
+    "sync:api": "python3 scripts/sync_feishu_api.py",
+    "agent": "node plugin/skills/gloria-prompts/scripts/gloria.mjs"
   },
   "dependencies": {
     "three": "0.180.0",
