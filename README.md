@@ -45,12 +45,16 @@
 
 ## 在网页上找
 
-<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/gallery.jpg" alt="画廊：瀑布流卡片，顶部是搜索框、筛选和排序"></a>
+<table><tr>
+<td width="50%" valign="top"><a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/gallery.jpg" alt="画廊按最近收录排序：瀑布流卡片，顶部是搜索框、筛选和排序"></a><br><b>最近收录</b><br><sub>默认的排序，新收进来的在前面。</sub></td>
+<td width="50%" valign="top"><a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/popular.jpg" alt="画廊按最多点赞排序，卡片左上角显示点赞数"></a><br><b>最多点赞</b><br><sub>看看大家点赞最多的是哪些。</sub></td>
+</tr></table>
 
 [打开灵感库](https://seasnakes.github.io/gloria-prompt-archive/)，往下滑就是画廊。
 
 - 搜索框会搜标题、提示词全文、作者和标签。提示词大多是英文，中文搜不到就换英文，比如「霓虹」搜不够，再搜 neon。
 - 「筛选」里能按模型、生成方式、来源、风格标签组合着找。
+- 右上角能切换排序：最近收录，或者最多点赞。点赞不用登录，点卡片左上角的心就行。
 - 点开一条可以看视频，左右滑切换。卡片右上角一点就复制提示词。
 - 分享某一条，复制作品链接就行，长这样：`…/gloria-prompt-archive/#work/作品ID`。
 
