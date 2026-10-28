@@ -1,5 +1,6 @@
+import { t, label } from './i18n.js';
 const names = ['source', 'model', 'method', 'tag'];
-const kindLabels = { prompt: '有提示词', reference: '效果参考' };
+const kindLabels = { prompt: 'kind.prompt', reference: 'kind.reference' };
 export function startCompactFilters({ getFilters, apply }) {
   const panel = document.querySelector('#filter-dialog');
   const trigger = document.querySelector('#open-filters');
@@ -53,7 +54,7 @@ export function startCompactFilters({ getFilters, apply }) {
   });
   return { sync() {
     const filters = getFilters();
-    const chosen = [kindLabels[filters.kind], ...names.map(name => filters[name])].filter(Boolean);
+    const chosen = [kindLabels[filters.kind] && t(kindLabels[filters.kind]), ...names.map(name => filters[name] && label(filters[name]))].filter(Boolean);
     badge.textContent = chosen.length;
     badge.hidden = !chosen.length;
     trigger.classList.toggle('has-filters', !!chosen.length);

@@ -1,9 +1,10 @@
 import { icon } from './icons.js';
+import { t } from './i18n.js';
 
 export function createSortControl(parent, onChange) {
   const root = document.createElement('div');
   root.className = 'sort-control';
-  root.innerHTML = `<button id="sort-order" class="sort-trigger" type="button" aria-label="作品排序：最近收录" aria-haspopup="listbox" aria-expanded="false" aria-controls="sort-options"><span>最近收录</span>${icon('chevron')}</button><div id="sort-options" class="sort-options" role="listbox" aria-label="作品排序" hidden><button type="button" role="option" data-sort="recent" aria-selected="true"><span>最近收录</span><span class="sort-check" aria-hidden="true">✓</span></button><button type="button" role="option" data-sort="popular" aria-selected="false"><span>最多点赞</span><span class="sort-check" aria-hidden="true">✓</span></button></div>`;
+  root.innerHTML = `<button id="sort-order" class="sort-trigger" type="button" aria-label="${t('sort.current', { label: t('sort.recent') })}" aria-haspopup="listbox" aria-expanded="false" aria-controls="sort-options"><span>${t('sort.recent')}</span>${icon('chevron')}</button><div id="sort-options" class="sort-options" role="listbox" aria-label="${t('sort.label')}" hidden><button type="button" role="option" data-sort="recent" aria-selected="true"><span>${t('sort.recent')}</span><span class="sort-check" aria-hidden="true">✓</span></button><button type="button" role="option" data-sort="popular" aria-selected="false"><span>${t('sort.popular')}</span><span class="sort-check" aria-hidden="true">✓</span></button></div>`;
   parent.append(root);
   const trigger = root.querySelector('.sort-trigger'), menu = root.querySelector('.sort-options');
   const options = [...menu.querySelectorAll('[data-sort]')];
@@ -15,7 +16,7 @@ export function createSortControl(parent, onChange) {
     for (const option of options) option.setAttribute('aria-selected', String(option.dataset.sort === value));
     const label = options.find(option => option.dataset.sort === value).querySelector('span').textContent;
     trigger.querySelector('span').textContent = label;
-    trigger.setAttribute('aria-label', '作品排序：' + label);
+    trigger.setAttribute('aria-label', t('sort.current', { label }));
     trigger.dataset.value = value;
   }
   trigger.addEventListener('click', () => menu.hidden ? open() : close(true));

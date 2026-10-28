@@ -18,6 +18,7 @@
 <a href="https://seasnakes.github.io/gloria-prompt-archive/llms.txt"><img alt="llms.txt" src="https://img.shields.io/badge/llms.txt-%E2%9C%93-0b1a33?style=flat-square"></a>
 <a href="https://github.com/seasnakes/gloria-prompt-archive/actions/workflows/pages.yml"><img alt="同步状态" src="https://img.shields.io/github/actions/workflow/status/seasnakes/gloria-prompt-archive/pages.yml?branch=main&label=%E6%AF%8F%E5%85%AD%E5%B0%8F%E6%97%B6%E5%90%8C%E6%AD%A5&style=flat-square"></a>
 <a href="https://github.com/seasnakes/gloria-prompt-archive/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/seasnakes/gloria-prompt-archive?style=flat-square&color=f5b700"></a>
+<a href="https://x.com/snakeseas"><img alt="X" src="https://img.shields.io/badge/X-@snakeseas-000?style=flat-square&logo=x&logoColor=white"></a>
 <a href="https://space.bilibili.com/486682682"><img alt="B站" src="https://img.shields.io/badge/B%E7%AB%99-SeASnAkEss-00a1d6?style=flat-square&logo=bilibili&logoColor=white"></a>
 <a href="https://www.zhihu.com/people/SeASnAkE"><img alt="知乎" src="https://img.shields.io/badge/%E7%9F%A5%E4%B9%8E-SeASnAkE-1772f6?style=flat-square&logo=zhihu&logoColor=white"></a>
 
@@ -51,7 +52,7 @@
 <td width="50%" valign="top"><a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/popular.jpg" alt="画廊按最多点赞排序，卡片左上角显示点赞数"></a><br><b>最多点赞</b><br><sub>看看大家点赞最多的是哪些。</sub></td>
 </tr></table>
 
-[打开灵感库](https://seasnakes.github.io/gloria-prompt-archive/)，往下滑就是画廊。
+[打开灵感库](https://seasnakes.github.io/gloria-prompt-archive/)，往下滑就是画廊。网页有中文和英文两套界面，右上角切换。
 
 - 搜索框会搜标题、提示词全文、作者和标签。提示词大多是英文，中文搜不到就换英文，比如「霓虹」搜不够，再搜 neon。
 - 「筛选」里能按模型、生成方式、来源、风格标签组合着找。
@@ -150,6 +151,7 @@ npm run dev
 
 ## 更新记录
 
+- **2026-10-29** · 加了英文界面，右上角中/EN 切换。首页打字机打出完整的那首小诗，蓝色背景就是从它来的。Logo 改为链接到 X。
 - **2026-10-28** · agent 能直接搜库：skill、MCP、`llms.txt` 和单条 Markdown。README 重写，英文版放在首页，中文版是这一份。
 - **2026-10-23** · 收进 [Vincentwei1021/mg-styles-15](https://github.com/Vincentwei1021/mg-styles-15) 的 15 种 MG 动画风格，提示词、示例视频、封面都有，[MIT 许可](public/licenses/mg-styles-15-MIT.txt)。
 - **2026-10-11** · 加了匿名点赞和「最多点赞」排序。
@@ -178,5 +180,5 @@ npm run dev
 <div align="center">
 <br>
 <sub>美人之美，各美其美。美美与共，天下大同。</sub><br>
-<sub>by SEASNAKE · <a href="https://space.bilibili.com/486682682">B站</a> · <a href="https://www.zhihu.com/people/SeASnAkE">知乎</a></sub>
+<sub>by SEASNAKE · <a href="https://x.com/snakeseas">X</a> · <a href="https://space.bilibili.com/486682682">B站</a> · <a href="https://www.zhihu.com/people/SeASnAkE">知乎</a></sub>
 </div>

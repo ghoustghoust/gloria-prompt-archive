@@ -1,4 +1,5 @@
 import { BlueTears } from './blue-tears/fluid.js';
+import { t } from './i18n.js';
 
 // One non-interactive canvas. Pointer listeners never capture, cancel or block page input.
 export function startBackground() {
@@ -12,7 +13,7 @@ export function startBackground() {
   const listen = (target, name, fn, options = {}) => target.addEventListener(name, fn, { ...options, signal: abort.signal });
   const resetPointer = () => { previous = null; fluid?.targetTilt.set(0, 0); };
   const showPause = () => {
-    toggle.textContent = paused ? '继续流动' : '暂停流动';
+    toggle.textContent = paused ? t('hero.resume') : t('hero.pause');
     toggle.setAttribute('aria-pressed', String(paused));
     document.body.classList.toggle('motion-paused', paused);
   };
@@ -62,7 +63,8 @@ export function startBackground() {
     listen(toggle, 'click', () => { paused = !paused; syncMotion(); });
     listen(reducedMotion, 'change', event => { paused = event.matches; syncMotion(); });
     listen(document, 'visibilitychange', syncMotion);
-    const syncDialog = () => { modalOpen = !!document.querySelector('dialog[open]'); syncMotion(); };
+    // The poem card wants the fluid behind it at full speed; other dialogs slow it down.
+    const syncDialog = () => { modalOpen = !!document.querySelector('dialog[open]:not([data-keep-motion])'); syncMotion(); };
     dialogObserver = new MutationObserver(syncDialog);
     document.querySelectorAll('dialog').forEach(dialog => dialogObserver.observe(dialog, { attributes: true, attributeFilter: ['open'] }));
     syncDialog();

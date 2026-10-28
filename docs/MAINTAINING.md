@@ -33,6 +33,8 @@ npm run preview    # http://127.0.0.1:5183/ ，看实际构建结果
 
 它不是实时查询。新加的作品要等下一次同步成功才出现。
 
+只改了 `README.md`、`README.zh-CN.md`、`docs/` 或 `reports/` 的推送不会触发它（工作流里的 `paths-ignore`）：这些文件 GitHub 直接从仓库读，网站用不到。改了别的文件照常触发；定时同步不受影响。以后要是网站开始用这几个目录里的文件，记得把它从 `paths-ignore` 里删掉。
+
 ### 凭据
 
 仓库 Secrets：`LARK_APP_ID`、`LARK_APP_SECRET`、`LARK_BASE_TOKEN`、`LARK_TABLE_ID`。飞书应用需要 `bitable:app:readonly` 权限和目标表的读取权限。这些只在 Actions 里用，不进浏览器，也不进构建产物。`scripts/validate.mjs` 会拒绝发布带 token 字段的目录。
@@ -86,6 +88,16 @@ npm run build
 npm run agent -- search neon --data dist/agent/prompts.json
 claude plugin validate .            # 检查 marketplace 和插件清单
 ```
+
+## 中英文界面
+
+界面文字都在 `src/i18n.js`，中文和英文各一份，键名必须一致（`tests/i18n.test.mjs` 会查，也会查 `index.html` 里用到的每个键）。静态页面上的文字用 `data-i18n`（替换文字）和 `data-i18n-attr`（`属性:键;属性:键`）标出来；脚本里生成的文字用 `t('键')`。
+
+- 语言的选择顺序：链接里的 `?lang=zh|en`，然后是访客上次的选择（浏览器存储 `gloria:lang`），最后看浏览器语言，中文浏览器默认中文，其余默认英文。`?lang=` 不会覆盖访客自己的选择。
+- 切换语言会保存选择后重新加载页面，每次加载只用一种语言渲染。
+- 收录内容（标题、提示词、模型版本说明）照原样显示。模型、生成方式、来源和风格标签在英文界面显示英文名，对照表是 `ENGLISH_NAMES`，README 的英文统计图也用它。飞书里新增了标签或模型，记得在这里补英文名，否则英文界面会直接显示中文。
+- 两种名字都能搜：英文界面搜 `cinematic`、中文界面搜 `电影感` 都能找到带「电影感」标签的作品。
+- 首页打字机按三页轮流打出那首小诗（`POEM.pages`）；点诗句会打开整首诗、译文和知乎原文链接（`src/poem.js`）。这个弹窗带 `data-keep-motion`，打开时背景流体不降帧。
 
 ## 点赞
 

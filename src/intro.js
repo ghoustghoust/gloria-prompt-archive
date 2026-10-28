@@ -1,5 +1,6 @@
 import Typed from 'typed.js';
 import triangle from './assets/seasnake-logo-triangle.svg?raw';
+import { POEM, language } from './i18n.js';
 
 export function startIntro() {
   document.querySelectorAll('[data-logo]').forEach(el => {
@@ -8,21 +9,27 @@ export function startIntro() {
   });
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const writers = [];
-  function type(element, string, speed, delay = 0) {
-    const html = element.innerHTML;
-    element.setAttribute('aria-label', element.textContent);
+  // Every page is laid out invisibly in the same grid cell, so the block keeps the tallest page's height.
+  function type(element, pages, options) {
+    if (!element.hasAttribute('aria-label')) element.setAttribute('aria-label', element.textContent);
     element.classList.add('typewriter');
-    element.innerHTML = `<span class="typewriter-reserve" aria-hidden="true">${html}</span><span class="typewriter-output" aria-hidden="true"></span>`;
+    element.innerHTML = pages.map(page => `<span class="typewriter-reserve" aria-hidden="true">${page}</span>`).join('') + '<span class="typewriter-output" aria-hidden="true"></span>';
     const output = element.querySelector('.typewriter-output');
-    const writer = { output, html, instance: null, started: false }; writers.push(writer);
+    const writer = { output, html: pages[0], instance: null, started: false }; writers.push(writer);
     return () => {
       if (writer.started) return; writer.started = true;
-      if (reduced.matches) output.innerHTML = html;
-      else writer.instance = new Typed(output, { strings: [string], typeSpeed: speed, startDelay: delay, showCursor: false });
+      if (reduced.matches) output.innerHTML = writer.html;
+      else writer.instance = new Typed(output, { strings: options.strings || pages, showCursor: false, ...options });
     };
   }
-  type(document.querySelector('#hero-title'), '光彩跃然', 200)();
-  type(document.querySelector('#hero-poem'), '宛如^500一只蓝色蝴蝶^500扑闪着翅膀在无边海洋上空^500漫舞^500、求索。', 100)();
+  type(document.querySelector('#hero-title'), ['光彩跃然'], { typeSpeed: 200 })();
+  // The poem behind the page: three pages typed, held, erased and typed again.
+  const english = language() === 'en';
+  const pages = POEM.pages[language()].map(lines => lines.join('<br>'));
+  type(document.querySelector('#hero-poem'), pages, {
+    strings: pages.map(page => page.replaceAll('<br>', '^500<br>')),
+    typeSpeed: english ? 45 : 100, backSpeed: english ? 12 : 30, backDelay: 4200, startDelay: 300, loop: true,
+  })();
   reduced.addEventListener('change', event => { if (event.matches) writers.forEach(w => { w.instance?.destroy(); w.instance = null; w.output.innerHTML = w.html; }); });
   const observer = new IntersectionObserver(([entry]) => {
     document.querySelector('.site-header').classList.toggle('scrolled', !entry.isIntersecting);

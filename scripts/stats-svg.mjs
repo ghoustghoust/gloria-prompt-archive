@@ -1,5 +1,7 @@
 // README chart: what the library holds, by model, method and style tag. One series per panel,
 // value labels at the bar ends; light and dark steps follow the viewer's colour scheme.
+import { ENGLISH_NAMES } from '../src/i18n.js';
+
 const xml = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const number = value => new Intl.NumberFormat('en-US').format(value);
 
@@ -18,17 +20,7 @@ const TEXT = {
     synced: date => `Synced from Feishu every six hours · last ${date}`,
     note: 'A work can have several tags. "Unconfirmed" means the original post didn\'t say.',
     desc: (total, prompts, date) => `${number(total)} works, ${number(prompts)} with the full prompt, by model, method and style tag. Synced ${date}.`,
-    names: {
-      '即梦 / Seedance': 'Seedance (即梦)', 'minimax h3': 'MiniMax H3', '待确认': 'Unconfirmed', '其他': 'Other',
-      '文生视频': 'Text to video', '图像生成': 'Image', '图生视频': 'Image to video', '代码生成视频': 'Video made in code',
-      '视频生视频': 'Video to video', '首尾帧': 'First & last frame',
-      '电影感': 'Cinematic', '人物': 'People', '动画': 'Animation', '写实': 'Realistic', '剧情动作与趣味': 'Story & action',
-      '产品广告': 'Product ads', '奇幻场景与角色': 'Fantasy', '运镜': 'Camera moves', '科幻': 'Sci-fi', '风景': 'Landscape',
-      '动态图形': 'Motion graphics', '3D与仿真': '3D & simulation', '运镜与转场': 'Camera & transitions', '科普讲解': 'Explainers',
-      'UI动效': 'UI motion', '音乐视频': 'Music video', '画面风格与图形叠加': 'Style & overlays', '像素艺术': 'Pixel art',
-      '分身与尺度错觉': 'Clones & scale tricks', '时间冻结与悬浮': 'Time freeze', '空间形变与消失': 'Warp & vanish',
-      '历史叙事': 'History', '名画再创作': 'Famous paintings remade',
-    },
+    names: ENGLISH_NAMES,
   },
 };
 

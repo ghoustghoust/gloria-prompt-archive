@@ -2,6 +2,12 @@ name: Publish GitHub Pages
 on:
   push:
     branches: [main]
+    # GitHub reads these straight from the repo; the site never uses them, so editing them alone skips the Feishu sync.
+    paths-ignore:
+      - 'README.md'
+      - 'README.zh-CN.md'
+      - 'docs/**'
+      - 'reports/**'
   schedule:
     - cron: '23 */6 * * *'
   workflow_dispatch:

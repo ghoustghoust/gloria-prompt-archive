@@ -7,7 +7,7 @@
 **AI video and image prompts I've collected, each one credited to its author with a link to the original post.**<br>
 <sub>光彩跃然 · 影像灵感库 · Seedance, GPT Image, Claude Opus, MiniMax and more · 中文用户请看 <a href="README.zh-CN.md">简体中文说明</a></sub>
 
-<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img alt="Open the gallery" src="https://img.shields.io/badge/%E2%96%B6%20Open%20the%20gallery-2f6bff?style=for-the-badge"></a>
+<a href="https://seasnakes.github.io/gloria-prompt-archive/?lang=en"><img alt="Open the gallery" src="https://img.shields.io/badge/%E2%96%B6%20Open%20the%20gallery-2f6bff?style=for-the-badge"></a>
 <a href="README.zh-CN.md"><img alt="简体中文" src="https://img.shields.io/badge/README-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-555?style=for-the-badge"></a>
 <a href="https://seasnakes.github.io/gloria-prompt-archive/"><img alt="Works" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fseasnakes.github.io%2Fgloria-prompt-archive%2Fagent%2Fbadges%2Fworks-en.json&style=for-the-badge"></a>
 <a href="https://seasnakes.github.io/gloria-prompt-archive/"><img alt="Full prompts" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fseasnakes.github.io%2Fgloria-prompt-archive%2Fagent%2Fbadges%2Fprompts-en.json&style=for-the-badge"></a>
@@ -18,6 +18,7 @@
 <a href="https://seasnakes.github.io/gloria-prompt-archive/llms.txt"><img alt="llms.txt" src="https://img.shields.io/badge/llms.txt-%E2%9C%93-0b1a33?style=flat-square"></a>
 <a href="https://github.com/seasnakes/gloria-prompt-archive/actions/workflows/pages.yml"><img alt="Sync status" src="https://img.shields.io/github/actions/workflow/status/seasnakes/gloria-prompt-archive/pages.yml?branch=main&label=sync%20every%206%20h&style=flat-square"></a>
 <a href="https://github.com/seasnakes/gloria-prompt-archive/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/seasnakes/gloria-prompt-archive?style=flat-square&color=f5b700"></a>
+<a href="https://x.com/snakeseas"><img alt="X" src="https://img.shields.io/badge/X-@snakeseas-000?style=flat-square&logo=x&logoColor=white"></a>
 <a href="https://space.bilibili.com/486682682"><img alt="Bilibili" src="https://img.shields.io/badge/Bilibili-SeASnAkEss-00a1d6?style=flat-square&logo=bilibili&logoColor=white"></a>
 <a href="https://www.zhihu.com/people/SeASnAkE"><img alt="Zhihu" src="https://img.shields.io/badge/Zhihu-SeASnAkE-1772f6?style=flat-square&logo=zhihu&logoColor=white"></a>
 
@@ -44,7 +45,7 @@ A few rules I stick to:
 - If the post doesn't say which model or method was used, it's marked unconfirmed (待确认). I don't guess.
 - I haven't re-run most of these prompts myself, so they're marked untested (待测试). The author's own video shows what the prompt did for them.
 
-The site is in Chinese. Most of the prompts are in English.
+The site has a Chinese and an English interface; the button at the top right switches between them. Most of the prompts are in English.
 
 ## Browsing on the web
 
@@ -53,10 +54,10 @@ The site is in Chinese. Most of the prompts are in English.
 <td width="50%" valign="top"><a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/popular.jpg" alt="The gallery sorted by most liked, with like counts on each card"></a><br><b>Most liked</b> · 最多点赞<br><sub>See what other visitors liked most.</sub></td>
 </tr></table>
 
-[Open the gallery](https://seasnakes.github.io/gloria-prompt-archive/) and scroll down.
+[Open the gallery](https://seasnakes.github.io/gloria-prompt-archive/?lang=en) and scroll down.
 
 - The search box looks through titles, full prompt text, authors and tags. Most prompts are in English, so English keywords usually find more than Chinese ones.
-- 筛选 (Filter) narrows things down by model, method, source and style tag.
+- Filter narrows things down by model, method, source and style tag. Model, method and tag names have English labels, and English names work in the search box too.
 - The sort menu switches between newest and most liked. Likes don't need an account: tap the heart on a card.
 - Open a work to play it and swipe left or right for the next one. The button at a card's top right copies its prompt.
 - To share a work, copy its link. It looks like `…/gloria-prompt-archive/#work/<id>`.
@@ -152,6 +153,7 @@ Then open http://127.0.0.1:5182/ . The repo ships a 46-work sample; the full lib
 
 ## Changelog
 
+- **2026-10-29** · An English interface with a 中/EN switch. The home page types out the whole poem the blue background came from. The logo now links to X.
 - **2026-10-28** · Agents can search the library: a skill, an MCP server, `llms.txt` and a Markdown page per work. New README, English first.
 - **2026-10-23** · Added the 15 motion-graphics styles from [Vincentwei1021/mg-styles-15](https://github.com/Vincentwei1021/mg-styles-15), with prompts, sample videos and covers ([MIT licence](public/licenses/mg-styles-15-MIT.txt)).
 - **2026-10-11** · Anonymous likes and a most-liked sort.
@@ -180,5 +182,5 @@ How each import was checked is in [docs/MAINTAINING.md](docs/MAINTAINING.md#历�
 <div align="center">
 <br>
 <sub>美人之美，各美其美。美美与共，天下大同。</sub><br>
-<sub>by SEASNAKE · <a href="https://space.bilibili.com/486682682">Bilibili</a> · <a href="https://www.zhihu.com/people/SeASnAkE">Zhihu</a></sub>
+<sub>by SEASNAKE · <a href="https://x.com/snakeseas">X</a> · <a href="https://space.bilibili.com/486682682">Bilibili</a> · <a href="https://www.zhihu.com/people/SeASnAkE">Zhihu</a></sub>
 </div>
