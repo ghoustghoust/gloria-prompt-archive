@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 5182 --strictPort",
     "build": "node scripts/validate.mjs && vite build && node scripts/prune-build-media.mjs",
+    "build:toy": "node scripts/build-toy.mjs",
     "preview": "vite preview --host 127.0.0.1 --port 5183 --strictPort",
     "test": "node --test tests/*.test.mjs",
     "sync": "python3 scripts/sync_feishu.py",
