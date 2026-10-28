@@ -14,9 +14,6 @@ on:
         description: 'Submit this version for Bilibili review (otherwise preview only)'
         type: boolean
         default: false
-  push:
-    branches: [codex/toy-cicd-20261028]
-
 permissions:
   contents: read
   actions: read
