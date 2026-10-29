@@ -1,14 +1,14 @@
 import { icon } from './icons.js';
 import { t } from './i18n.js';
 
-export function createSortControl(parent, onChange) {
+export function createSortControl(parent, onChange, initial = 'recent') {
   const root = document.createElement('div');
   root.className = 'sort-control';
-  root.innerHTML = `<button id="sort-order" class="sort-trigger" type="button" aria-label="${t('sort.current', { label: t('sort.recent') })}" aria-haspopup="listbox" aria-expanded="false" aria-controls="sort-options"><span>${t('sort.recent')}</span>${icon('chevron')}</button><div id="sort-options" class="sort-options" role="listbox" aria-label="${t('sort.label')}" hidden><button type="button" role="option" data-sort="recent" aria-selected="true"><span>${t('sort.recent')}</span><span class="sort-check" aria-hidden="true">✓</span></button><button type="button" role="option" data-sort="popular" aria-selected="false"><span>${t('sort.popular')}</span><span class="sort-check" aria-hidden="true">✓</span></button></div>`;
+  root.innerHTML = `<button id="sort-order" class="sort-trigger" type="button" aria-label="${t('sort.current', { label: t('sort.recent') })}" aria-haspopup="listbox" aria-expanded="false" aria-controls="sort-options"><span>${t('sort.recent')}</span>${icon('chevron')}</button><div id="sort-options" class="sort-options" role="listbox" aria-label="${t('sort.label')}" hidden><button type="button" role="option" data-sort="popular" aria-selected="false"><span>${t('sort.popular')}</span><span class="sort-check" aria-hidden="true">✓</span></button><button type="button" role="option" data-sort="recent" aria-selected="true"><span>${t('sort.recent')}</span><span class="sort-check" aria-hidden="true">✓</span></button></div>`;
   parent.append(root);
   const trigger = root.querySelector('.sort-trigger'), menu = root.querySelector('.sort-options');
   const options = [...menu.querySelectorAll('[data-sort]')];
-  let value = 'recent';
+  let value = initial;
   function close(focus = false) { menu.hidden = true; trigger.setAttribute('aria-expanded', 'false'); if (focus) trigger.focus({preventScroll:true}); }
   function open() { menu.hidden = false; trigger.setAttribute('aria-expanded','true'); options.find(option => option.dataset.sort === value).focus({preventScroll:true}); }
   function setValue(next) {

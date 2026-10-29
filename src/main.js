@@ -38,7 +38,14 @@ let items = [], filtered = [], limit = 24, current = null, modalItems = [], last
 const filters = { kind: 'all', query: '', source: '', model: '', method: '', tag: '' };
 const dialog = $('#work-dialog'), video = $('#work-video');
 const titleForKind = kind => kind === 'prompt' ? t('kind.prompt') : t('kind.reference');
-function toast(message) { $('#toast').textContent = message; $('#toast').classList.add('visible'); clearTimeout(toastTimer); toastTimer = setTimeout(() => $('#toast').classList.remove('visible'), 2600); }
+// An open dialog sits in the top layer, so the toast goes in as a popover from inside it (a z-index can't beat the dialog).
+function toast(message) {
+  const el = $('#toast'), host = document.querySelector('dialog[open]') || document.body;
+  if (el.parentElement !== host) host.append(el);
+  el.classList.remove('visible');
+  if (el.showPopover) { if (el.matches(':popover-open')) el.hidePopover(); el.showPopover(); void el.offsetWidth; }
+  el.textContent = message; el.classList.add('visible'); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('visible'), 2600);
+}
 startIntro();
 startPoem();
 // Shown once the hero has scrolled away (html.in-gallery, set in intro.js).
@@ -66,7 +73,9 @@ function refreshLikeButtons(id) {document.querySelectorAll('[data-like]').forEac
 const likes=createLikesClient({api:import.meta.env.VITE_LIKES_URL || 'https://gloria-likes-seasnake-1011.elatedeel.chatgpt.site',
   onChange(id,state){if(rankingCounts)rankingCounts.set(id,state.count);refreshLikeButtons(id);},onBusy:refreshLikeButtons});
 const detailLike=document.createElement('button');detailLike.className='work-like';$('.work-topline').append(detailLike);
-const sortControl=createSortControl($('.search-actions'),async value=>{if(value==='popular'){sortControl.busy=true;try{rankingCounts=await likes.ranking();}catch(error){sortControl.value='recent';toast(english?t('like.failed'):error.message);}finally{sortControl.busy=false;}}applyFilters();});
+const sortControl=createSortControl($('.search-actions'),async value=>{if(value==='popular'){sortControl.busy=true;try{rankingCounts=await likes.ranking();}catch(error){sortControl.value='recent';toast(english?t('like.failed'):error.message);}finally{sortControl.busy=false;}}applyFilters();},'popular');
+// Most liked is the default. The first render waits up to 4 s for the ranking; if it fails, the gallery falls back to newest.
+const firstRanking=likes.ranking().then(counts=>{rankingCounts=counts;if(items.length&&sortControl.value==='popular')render();},()=>{if(sortControl.value==='popular')sortControl.value='recent';});
 $('.archive-footnote').textContent+=' '+t('footnote.likes');
 const workImage=document.createElement('img');workImage.id='work-image';workImage.hidden=true;$('.work-media').insertBefore(workImage,$('.video-surface'));
 const imageNav=document.createElement('div');imageNav.className='image-navigation';imageNav.hidden=true;imageNav.innerHTML=`<button data-image-step="-1" aria-label="${t('media.prevLabel')}">${t('media.prev')}</button><span></span><button data-image-step="1" aria-label="${t('media.nextLabel')}">${t('media.next')}</button>`;
@@ -266,6 +275,7 @@ async function loadCatalog() {
     $('[data-kind="all"] span').textContent = items.length; $('[data-kind="prompt"] span').textContent = prompts; $('[data-kind="reference"] span').textContent = items.length - prompts;
     ['source', 'model', 'method'].forEach(name => { const select = $(`#${name}-filter`); select.querySelectorAll('option:not(:first-child)').forEach(option => option.remove()); [...new Set([...(catalog.options?.[name] || []), ...items.map(item => item[name])])].filter(Boolean).forEach(value => select.add(new Option(label(value), value))); });
     $('#tag-filters').innerHTML = [...new Set([...(catalog.options?.tags || []), ...items.flatMap(item => item.tags)])].map(tag => `<button data-tag="${esc(tag)}" aria-pressed="false">${esc(label(tag))}</button>`).join('');
+    if (sortControl.value === 'popular' && !rankingCounts) await Promise.race([firstRanking, new Promise(resolve => setTimeout(resolve, 4000))]);
     applyFilters(); readHash();
   } catch { $('#catalog-error').hidden = false; $('#result-count').textContent = t('result.failed'); }
 }

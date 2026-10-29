@@ -50,15 +50,15 @@ The site has a Chinese and an English interface; the button at the top right swi
 ## Browsing on the web
 
 <table><tr>
-<td width="50%" valign="top"><a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/gallery.jpg" alt="The gallery sorted by newest: a masonry grid of cards under a search box, filters and a sort menu"></a><br><b>Newest</b> · 最近收录<br><sub>The default order: the latest additions come first.</sub></td>
-<td width="50%" valign="top"><a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/popular.jpg" alt="The gallery sorted by most liked, with like counts on each card"></a><br><b>Most liked</b> · 最多点赞<br><sub>See what other visitors liked most.</sub></td>
+<td width="50%" valign="top"><a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/popular.jpg" alt="The gallery sorted by most liked, with like counts on each card"></a><br><b>Most liked</b> · 最多点赞<br><sub>The default order: what visitors liked most comes first.</sub></td>
+<td width="50%" valign="top"><a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/gallery.jpg" alt="The gallery sorted by newest: a masonry grid of cards under a search box, filters and a sort menu"></a><br><b>Newest</b> · 最近收录<br><sub>The latest additions first.</sub></td>
 </tr></table>
 
 [Open the gallery](https://seasnakes.github.io/gloria-prompt-archive/?lang=en) and scroll down.
 
 - The search box looks through titles, full prompt text, authors and tags. Most prompts are in English, so English keywords usually find more than Chinese ones.
 - Filter narrows things down by model, method, source and style tag. Model, method and tag names have English labels, and English names work in the search box too.
-- The sort menu switches between newest and most liked. Likes don't need an account: tap the heart on a card.
+- The gallery opens sorted by most liked; the sort menu switches to newest. Likes don't need an account: tap the heart on a card.
 - Open a work to play it and swipe left or right for the next one. The button at a card's top right copies its prompt.
 - To share a work, copy its link. It looks like `…/gloria-prompt-archive/#work/<id>`.
 
@@ -154,6 +154,7 @@ Then open http://127.0.0.1:5182/ . The repo ships a 46-work sample; the full lib
 
 ## Changelog
 
+- **2026-10-29** · The gallery opens sorted by most liked. The "Prompt copied" notice now shows above an open work instead of behind it.
 - **2026-10-29** · An English interface with a 中/EN switch. The home page types out the whole poem the blue background came from. The logo now links to X. A back-to-top button. Agents now come back with about four picks, each with its image and full prompt.
 - **2026-10-28** · Agents can search the library: a skill, an MCP server, `llms.txt` and a Markdown page per work. New README, English first.
 - **2026-10-23** · Added the 15 motion-graphics styles from [Vincentwei1021/mg-styles-15](https://github.com/Vincentwei1021/mg-styles-15), with prompts, sample videos and covers ([MIT licence](public/licenses/mg-styles-15-MIT.txt)).

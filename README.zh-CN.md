@@ -48,15 +48,15 @@
 ## 在网页上找
 
 <table><tr>
-<td width="50%" valign="top"><a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/gallery.jpg" alt="画廊按最近收录排序：瀑布流卡片，顶部是搜索框、筛选和排序"></a><br><b>最近收录</b><br><sub>默认的排序，新收进来的在前面。</sub></td>
-<td width="50%" valign="top"><a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/popular.jpg" alt="画廊按最多点赞排序，卡片左上角显示点赞数"></a><br><b>最多点赞</b><br><sub>看看大家点赞最多的是哪些。</sub></td>
+<td width="50%" valign="top"><a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/popular.jpg" alt="画廊按最多点赞排序，卡片左上角显示点赞数"></a><br><b>最多点赞</b><br><sub>默认的排序，大家点赞最多的在前面。</sub></td>
+<td width="50%" valign="top"><a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/gallery.jpg" alt="画廊按最近收录排序：瀑布流卡片，顶部是搜索框、筛选和排序"></a><br><b>最近收录</b><br><sub>新收进来的在前面。</sub></td>
 </tr></table>
 
 [打开灵感库](https://seasnakes.github.io/gloria-prompt-archive/)，往下滑就是画廊。网页有中文和英文两套界面，右上角切换。
 
 - 搜索框会搜标题、提示词全文、作者和标签。提示词大多是英文，中文搜不到就换英文，比如「霓虹」搜不够，再搜 neon。
 - 「筛选」里能按模型、生成方式、来源、风格标签组合着找。
-- 右上角能切换排序：最近收录，或者最多点赞。点赞不用登录，点卡片左上角的心就行。
+- 打开默认按最多点赞排序，右上角能切换成最近收录。点赞不用登录，点卡片左上角的心就行。
 - 点开一条可以看视频，左右滑切换。卡片右上角一点就复制提示词。
 - 分享某一条，复制作品链接就行，长这样：`…/gloria-prompt-archive/#work/作品ID`。
 
@@ -152,6 +152,7 @@ npm run dev
 
 ## 更新记录
 
+- **2026-10-29** · 画廊默认按最多点赞排序。作品详情里点「复制提示词」，「已复制」的提示现在显示在弹窗上面，不再被挡住。
 - **2026-10-29** · 加了英文界面，右上角中/EN 切换。首页打字机打出完整的那首小诗，蓝色背景就是从它来的。Logo 改为链接到 X。加了回到顶部按钮。agent 现在一次挑四条左右，每条带图和完整提示词。
 - **2026-10-28** · agent 能直接搜库：skill、MCP、`llms.txt` 和单条 Markdown。README 重写，英文版放在首页，中文版是这一份。
 - **2026-10-23** · 收进 [Vincentwei1021/mg-styles-15](https://github.com/Vincentwei1021/mg-styles-15) 的 15 种 MG 动画风格，提示词、示例视频、封面都有，[MIT 许可](public/licenses/mg-styles-15-MIT.txt)。
