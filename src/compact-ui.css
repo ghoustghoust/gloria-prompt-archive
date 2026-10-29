@@ -189,3 +189,11 @@ html[lang=en] .poem-dialog h2 { font-family: Georgia, serif; letter-spacing: .18
 .poem-close .ui-icon { width: 18px; height: 18px; }
 @media (max-width: 480px) { .poem-dialog { padding: 42px 22px 26px; } .poem-text p { font-size: 15px; letter-spacing: .08em; } }
 @media (prefers-reduced-motion: reduce) { .poem-dialog[open] { animation: none; } }
+
+/* Back to top: appears once the hero has scrolled away */
+.back-to-top { position: fixed; z-index: 30; right: max(22px, env(safe-area-inset-right)); bottom: calc(24px + env(safe-area-inset-bottom)); width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%; color: var(--glass-ink); background: var(--glass-nav); border: 1px solid var(--glass-line); box-shadow: 0 10px 30px #0006; backdrop-filter: blur(18px) saturate(140%); -webkit-backdrop-filter: blur(18px) saturate(140%); opacity: 0; visibility: hidden; transform: translateY(10px); pointer-events: none; transition: opacity .25s, transform .25s, background .2s, visibility 0s .25s; }
+.back-to-top .ui-icon { width: 20px; height: 20px; }
+html.in-gallery .back-to-top { opacity: 1; visibility: visible; transform: none; pointer-events: auto; transition: opacity .25s, transform .25s, background .2s, visibility 0s; }
+.back-to-top:hover, .back-to-top:focus-visible { color: var(--glass-ink); background: var(--glass); }
+@media (max-width: 480px) { .back-to-top { width: 42px; height: 42px; right: max(14px, env(safe-area-inset-right)); bottom: calc(18px + env(safe-area-inset-bottom)); } }
+@media (prefers-reduced-motion: reduce) { .back-to-top { transition: none; } }

@@ -70,12 +70,13 @@ npm run preview    # http://127.0.0.1:5183/ ，看实际构建结果
 |---|---|
 | `llms.txt` | agent 的入口说明，带当前所有筛选项和数量 |
 | `agent/prompts.json` | 全部作品的全文，一行一条，去掉了媒体链接和参数说明 |
-| `agent/works/<id>.md` | 单条作品的 Markdown |
+| `agent/works/<id>.md` | 单条作品的 Markdown，开头是封面图，后面有这次同步的图片和视频链接 |
+| `agent/media/<id>.json` | 单条作品这次同步的封面、图片、视频链接和过期时间，脚本只在要展示某几条时才去取 |
 | `agent/facets.json` | 各筛选项的数量 |
 | `agent/badges/*.json` | README 顶部徽标（shields.io endpoint 格式），中文和 `-en` 英文各一套 |
 | `agent/stats.svg`、`agent/stats-en.svg` | README 里的统计图，中英文各一张（`scripts/stats-svg.mjs`） |
 
-两次 Actions 工作流都会生成这些文件，跟网站同步更新。媒体链接不放进去，因为一天就过期。
+两次 Actions 工作流都会生成这些文件，跟网站同步更新。媒体链接大约一天过期，所以 `prompts.json`（agent 会缓存六小时）里不放，只放在每次部署都重新生成的 `media/` 和 `works/` 里。
 
 skill、MCP 服务和命令行是同一个文件：`plugin/skills/gloria-prompts/scripts/gloria.mjs`，零依赖，Node 18+。它下载 `agent/prompts.json`，缓存到 `~/.cache/gloria-prompts/`（写不了就用系统临时目录），六小时内不重复下载。改这个脚本或 `SKILL.md` 时，同步提高 `plugin/.claude-plugin/plugin.json` 和脚本里的 `VERSION`，Claude Code 插件靠版本号判断更新。
 

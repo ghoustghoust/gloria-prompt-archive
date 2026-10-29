@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { parseLibrary, search, workMarkdown, formatSearch, createServer, parseArgs, parseQuery, TOOLS } from '../plugin/skills/gloria-prompts/scripts/gloria.mjs';
+import { parseLibrary, search, workMarkdown, formatSearch, createServer, parseArgs, parseQuery, fetchMedia, TOOLS } from '../plugin/skills/gloria-prompts/scripts/gloria.mjs';
 
 const root = new URL('../', import.meta.url);
 const work = (id, fields) => ({ id: id.padEnd(14, '0'), title: '', kind: 'prompt', model: '即梦 / Seedance', method: '文生视频', tags: [], author: 'Artist', source: 'X / Twitter', status: '待测试', media: 'video', createdAt: '2026-10-01', prompt: '', ...fields });
@@ -101,8 +101,13 @@ test('Build writes agent files from the published catalog without media links', 
   assert.ok(!/feishu|media\/[a-f0-9]{20}|"(cover|video|images|parameters)":/.test(text));
   assert.deepEqual(exported.items.map(item => item.prompt), catalog.items.map(item => item.prompt));
   assert.equal(fs.readdirSync(path.join(dist, 'agent/works')).length, catalog.count);
-  const first = catalog.items[0];
-  assert.match(fs.readFileSync(path.join(dist, `agent/works/${first.id}.md`), 'utf8'), new RegExp(`https://example.com/gallery/#work/${first.id}`));
+  assert.equal(fs.readdirSync(path.join(dist, 'agent/media')).length, catalog.count);
+  const first = catalog.items.find(item => item.cover);
+  const page = fs.readFileSync(path.join(dist, `agent/works/${first.id}.md`), 'utf8');
+  assert.match(page, new RegExp(`https://example.com/gallery/#work/${first.id}`));
+  const media = JSON.parse(fs.readFileSync(path.join(dist, `agent/media/${first.id}.json`), 'utf8'));
+  assert.equal(media.cover, new URL(first.cover, 'https://example.com/gallery/').href);
+  assert.ok(page.includes(`](${media.cover})`) && page.includes(`- image: ${media.cover}`));
   const llms = fs.readFileSync(path.join(dist, 'llms.txt'), 'utf8');
   assert.match(llms, /^# 光彩跃然/);
   assert.ok(llms.includes(`> ${catalog.count} AI video and image prompts`));
@@ -113,4 +118,28 @@ test('Build writes agent files from the published catalog without media links', 
   assert.match(english, /^<svg[^>]+role="img"[\s\S]*Method/);
   assert.ok(!/[\u4e00-\u9fff]/.test(english.replace(/即梦/g, '')), 'English chart labels are translated');
   fs.rmSync(dist, { recursive: true, force: true });
+});
+
+test('Work pages lead with the cover image and say when media links have expired', () => {
+  const item = library.byId.get('a1000000000000');
+  const later = new Date(Date.now() + 3600e3).toISOString(), earlier = new Date(Date.now() - 3600e3).toISOString();
+  const fresh = workMarkdown(item, 'https://example.com/', { cover: 'https://img.example/c.jpg', video: 'https://img.example/v.mp4', images: [], expiresAt: later });
+  assert.ok(fresh.startsWith('# Rainy Neon Tokyo Violinist\n\n![Rainy Neon Tokyo Violinist](https://img.example/c.jpg)'));
+  assert.match(fresh, /- video: https:\/\/img\.example\/v\.mp4/);
+  assert.match(fresh, /work until .* UTC/);
+  const stale = workMarkdown(item, 'https://example.com/', { cover: 'https://img.example/c.jpg', video: '', images: [], expiresAt: earlier });
+  assert.ok(!stale.includes('img.example') && /have expired; use the gallery link/.test(stale));
+  assert.match(workMarkdown(item, 'https://example.com/', { cover: 'https://img.example/c.jpg', images: [], generatedCover: true }), /made by this site/);
+});
+
+test('Media links come from per-work files next to the library and only web links are kept', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'gloria-media-'));
+  fs.mkdirSync(path.join(dir, 'media'));
+  fs.writeFileSync(path.join(dir, 'media/a1000000000000.json'), JSON.stringify({ cover: 'https://img.example/c.jpg', video: 'javascript:alert(1)', images: ['https://img.example/c.jpg', 'file:///etc/passwd'] }));
+  const local = parseLibrary(JSON.stringify({ items: [...library.items] }), path.join(dir, 'prompts.json'));
+  const media = await fetchMedia(local, ['a1000000000000', 'a2000000000000']);
+  assert.deepEqual(media.get('a1000000000000'), { cover: 'https://img.example/c.jpg', video: '', images: ['https://img.example/c.jpg'], generatedCover: false, expiresAt: null });
+  assert.equal(media.get('a2000000000000'), null);
+  assert.equal((await fetchMedia(library, ['a1000000000000'])).get('a1000000000000'), null, 'no media source, no network');
+  fs.rmSync(dir, { recursive: true, force: true });
 });

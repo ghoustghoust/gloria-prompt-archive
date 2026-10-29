@@ -70,7 +70,7 @@
 
 > 随便来五个电影感强的图生视频提示词
 
-它会在库里搜，中文英文都试一遍，读完整的提示词再挑几条给你，附上作品链接和原作者。想改成你自己的主题，接着说就行。
+可以按题材问（主题、风格、氛围），也可以按任务问（要做产品广告、MV、运镜）。它会中文英文都搜一遍，读完整的提示词，挑四条左右给你，每条带图、完整提示词、原作者和链接。想改成你自己的主题，接着说就行。
 
 ### Claude Code
 
@@ -82,7 +82,7 @@ claude plugin marketplace add seasnakes/gloria-prompt-archive
 claude plugin install gloria-prompts@seasnake
 ```
 
-装的是一个 skill 加一个 MCP 服务，三个工具：`search_prompts` 搜索，`get_prompts` 读全文，`list_facets` 列出所有模型、方式和标签。
+装的是一个 skill 加一个 MCP 服务，三个工具：`search_prompts` 搜索，`get_prompts` 读全文和图片、视频链接，`list_facets` 列出所有模型、方式和标签。
 
 ### Codex、Cursor 和其他 agent
 
@@ -124,10 +124,11 @@ node ~/gloria.mjs search 霓虹 雨夜 --model seedance
 |---|---|
 | [`llms.txt`](https://seasnakes.github.io/gloria-prompt-archive/llms.txt) | 怎么用，以及所有筛选项 |
 | [`agent/prompts.json`](https://seasnakes.github.io/gloria-prompt-archive/agent/prompts.json) | 全部提示词，一行一条，能直接 `grep` |
-| `agent/works/作品ID.md` | 单条作品，把作品链接里的 `#work/` 换成 `agent/works/`，末尾加 `.md` |
+| `agent/works/作品ID.md` | 单条作品，带图。把作品链接里的 `#work/` 换成 `agent/works/`，末尾加 `.md` |
+| `agent/media/作品ID.json` | 单条作品当前的图片和视频链接 |
 | [`agent/facets.json`](https://seasnakes.github.io/gloria-prompt-archive/agent/facets.json) | 每个模型、方式、标签各有多少条 |
 
-这些文件和网站同一次构建生成，内容一致。视频和图片链接没放进去，那是飞书的临时链接，一天就过期。要看作品，打开网页链接。
+这些文件和网站同一次构建生成，内容一致。图片和视频用的是飞书临时链接，每次同步后大约一天过期，所以 `prompts.json` 里不放，单条作品的文件里放当前有效的。作品的网页链接一直有效。
 
 ## 数据从哪来
 
@@ -151,7 +152,7 @@ npm run dev
 
 ## 更新记录
 
-- **2026-10-29** · 加了英文界面，右上角中/EN 切换。首页打字机打出完整的那首小诗，蓝色背景就是从它来的。Logo 改为链接到 X。
+- **2026-10-29** · 加了英文界面，右上角中/EN 切换。首页打字机打出完整的那首小诗，蓝色背景就是从它来的。Logo 改为链接到 X。加了回到顶部按钮。agent 现在一次挑四条左右，每条带图和完整提示词。
 - **2026-10-28** · agent 能直接搜库：skill、MCP、`llms.txt` 和单条 Markdown。README 重写，英文版放在首页，中文版是这一份。
 - **2026-10-23** · 收进 [Vincentwei1021/mg-styles-15](https://github.com/Vincentwei1021/mg-styles-15) 的 15 种 MG 动画风格，提示词、示例视频、封面都有，[MIT 许可](public/licenses/mg-styles-15-MIT.txt)。
 - **2026-10-11** · 加了匿名点赞和「最多点赞」排序。

@@ -41,6 +41,10 @@ const titleForKind = kind => kind === 'prompt' ? t('kind.prompt') : t('kind.refe
 function toast(message) { $('#toast').textContent = message; $('#toast').classList.add('visible'); clearTimeout(toastTimer); toastTimer = setTimeout(() => $('#toast').classList.remove('visible'), 2600); }
 startIntro();
 startPoem();
+// Shown once the hero has scrolled away (html.in-gallery, set in intro.js).
+$('.back-to-top').addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+});
 import('./background.js').then(({ startBackground }) => startBackground()).catch(() => { $('.ocean-background').dataset.state = 'fallback'; });
 $('#site-version').textContent = `V${version}`;
 const masonry = createMasonry($('#gallery'));

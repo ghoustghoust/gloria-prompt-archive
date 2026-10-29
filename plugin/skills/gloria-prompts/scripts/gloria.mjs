@@ -7,7 +7,7 @@ import path from 'node:path';
 import readline from 'node:readline';
 import { fileURLToPath } from 'node:url';
 
-export const VERSION = '1.0.0';
+export const VERSION = '1.1.0';
 export const SITE = (process.env.GLORIA_SITE || 'https://seasnakes.github.io/gloria-prompt-archive/').replace(/\/*$/, '/');
 const DATA = process.env.GLORIA_DATA || SITE + 'agent/prompts.json';
 const TTL = 6 * 60 * 60 * 1000;
@@ -51,7 +51,7 @@ function writeCache(url, text, meta) {
   }
 }
 
-export function parseLibrary(text) {
+export function parseLibrary(text, source = '') {
   const data = JSON.parse(text);
   if (!Array.isArray(data.items) || !data.items.every(item => item && typeof item.id === 'string')) throw new Error('Not a Gloria prompt library file');
   const facets = Object.fromEntries(FACETS.map(key => [key, new Map()]));
@@ -60,29 +60,63 @@ export function parseLibrary(text) {
     for (const key of FACETS) for (const value of key === 'tags' ? item.tags : [item[key]]) if (value) facets[key].set(value, (facets[key].get(value) || 0) + 1);
   }
   for (const key of FACETS) facets[key] = new Map([...facets[key]].sort((a, b) => b[1] - a[1]));
-  return { updatedAt: data.updatedAt, site: data.site || SITE, items: data.items, byId: new Map(data.items.map(item => [item.id, item])), facets };
+  // Media links expire within a day, so they live in small per-work files published with every sync.
+  const mediaBase = /prompts\.json$/.test(source) ? source.replace(/prompts\.json$/, 'media/') : null;
+  return { updatedAt: data.updatedAt, site: data.site || SITE, items: data.items, byId: new Map(data.items.map(item => [item.id, item])), facets, mediaBase };
+}
+
+export async function fetchMedia(library, ids) {
+  const read = async id => {
+    if (!library.mediaBase) return null;
+    try {
+      const text = /^https?:\/\//.test(library.mediaBase)
+        ? await fetch(new URL(`${id}.json`, library.mediaBase), { signal: AbortSignal.timeout(15_000) }).then(response => { if (!response.ok) throw new Error(); return response.text(); })
+        : fs.readFileSync(path.join(library.mediaBase, `${id}.json`), 'utf8');
+      const media = JSON.parse(text), web = value => typeof value === 'string' && /^https?:\/\//.test(value) ? value : '';
+      return { cover: web(media.cover), video: web(media.video), images: (media.images || []).map(web).filter(Boolean), generatedCover: !!media.generatedCover, expiresAt: media.expiresAt || null };
+    } catch { return null; }
+  };
+  return new Map(await Promise.all(ids.map(async id => [id, await read(id)])));
+}
+const expired = media => !!media?.expiresAt && Date.parse(media.expiresAt) < Date.now();
+
+async function saveImages(media, dir) {
+  fs.mkdirSync(dir, { recursive: true });
+  const saved = [];
+  for (const [id, links] of media) {
+    if (!links?.cover || expired(links)) continue;
+    try {
+      const response = await fetch(links.cover, { signal: AbortSignal.timeout(60_000) });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const type = response.headers.get('content-type') || '';
+      const file = path.join(dir, `${id}.${type.includes('png') ? 'png' : type.includes('webp') ? 'webp' : 'jpg'}`);
+      fs.writeFileSync(file, Buffer.from(await response.arrayBuffer()));
+      saved.push(file);
+    } catch (error) { warn(`could not save the image for ${id} (${error.message})`); }
+  }
+  return saved;
 }
 
 export async function loadLibrary({ source = DATA, refresh = false } = {}) {
-  if (!/^https?:\/\//.test(source)) return parseLibrary(fs.readFileSync(source, 'utf8'));
+  if (!/^https?:\/\//.test(source)) return parseLibrary(fs.readFileSync(source, 'utf8'), source);
   const cached = readCache(source);
-  if (cached && !refresh && Date.now() - cached.meta.fetchedAt < TTL) return parseLibrary(cached.text);
+  if (cached && !refresh && Date.now() - cached.meta.fetchedAt < TTL) return parseLibrary(cached.text, source);
   try {
     const headers = cached?.meta.etag && !refresh ? { 'if-none-match': cached.meta.etag } : {};
     const response = await fetch(source, { headers, signal: AbortSignal.timeout(90_000) });
     if (response.status === 304 && cached) {
       writeCache(source, cached.text, { ...cached.meta, fetchedAt: Date.now() });
-      return parseLibrary(cached.text);
+      return parseLibrary(cached.text, source);
     }
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const text = await response.text();
-    const library = parseLibrary(text);
+    const library = parseLibrary(text, source);
     writeCache(source, text, { fetchedAt: Date.now(), etag: response.headers.get('etag') });
     return library;
   } catch (error) {
     if (cached) {
       warn(`could not refresh (${error.message}); using the copy downloaded ${new Date(cached.meta.fetchedAt).toISOString()}`);
-      return parseLibrary(cached.text);
+      return parseLibrary(cached.text, source);
     }
     throw new Error(`Could not download the library from ${source} (${error.message}). The first run needs network access, about 8 MB.`);
   }
@@ -217,11 +251,13 @@ export function formatFacets(library) {
   ].join('\n');
 }
 
-export function workMarkdown(item, site = SITE) {
+export function workMarkdown(item, site = SITE, media = null) {
   const longest = [...`${item.prompt || ''}${item.negativePrompt || ''}`.matchAll(/`+/g)].reduce((max, match) => Math.max(max, match[0].length), 0);
   const fence = '`'.repeat(Math.max(3, longest + 1));
   const block = text => [fence + 'text', text, fence].join('\n');
-  const lines = [`# ${item.title}`, '',
+  const links = media && !expired(media) ? media : null;
+  const head = [`# ${item.title}`, '', ...(links?.cover ? [`![${item.title.replace(/[[\]]/g, '')}](${links.cover})`, ''] : [])];
+  const lines = [...head, ...[
     `- id: ${item.id}`,
     `- type: ${item.kind === 'prompt' ? 'prompt' : 'effect reference (the author did not publish a prompt)'}`,
     `- model: ${item.model}`,
@@ -233,7 +269,12 @@ export function workMarkdown(item, site = SITE) {
     item.status ? `- status: ${item.status}${STATUS[item.status] ? ` (${STATUS[item.status]})` : ''}` : '',
     item.createdAt ? `- added: ${item.createdAt}` : '',
     `- gallery: ${workURL(item.id, site)}`,
-  ].filter(line => line !== '');
+    links?.cover ? `- image: ${links.cover}${links.generatedCover ? ' (made by this site from the prompt, not the author\'s image)' : ''}` : '',
+    links?.images?.length > 1 ? `- more images: ${links.images.slice(1, 4).join(' ')}` : '',
+    links?.video ? `- video: ${links.video}` : '',
+    links?.expiresAt ? `- image and video links work until ${links.expiresAt.slice(0, 16).replace('T', ' ')} UTC; after that use the gallery link` : '',
+    media && !links ? '- image and video links have expired; use the gallery link' : '',
+  ].filter(line => line !== '')];
   lines.push('', '## Prompt', '', item.prompt ? block(item.prompt) : 'No original prompt was published. Anything below describes the effect; it is not a prompt.');
   if (item.negativePrompt) lines.push('', '## Negative prompt', '', block(item.negativePrompt));
   if (item.description) lines.push('', '## Effect', '', item.description);
@@ -268,7 +309,7 @@ export const TOOLS = [
   },
   {
     name: 'get_prompts', title: 'Read full prompts',
-    description: 'Full prompt text and credits for up to 10 works, by id (the 14-character id from search_prompts) or gallery link (…#work/<id>).',
+    description: 'Full prompt text, credits and current image/video links for up to 10 works, by id (the 14-character id from search_prompts) or gallery link (…#work/<id>). Each work starts with a Markdown image of its cover. Image and video links are temporary (about a day); the gallery link is permanent.',
     inputSchema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'string' }, minItems: 1, maxItems: 10 } }, required: ['ids'] },
     annotations: { readOnlyHint: true, openWorldHint: true },
   },
@@ -281,13 +322,14 @@ export const TOOLS = [
 ];
 
 const idsFrom = values => [values].flat().map(value => /[a-f0-9]{14}/.exec(String(value))?.[0] || String(value));
-export function runTool(library, name, input = {}) {
+export async function runTool(library, name, input = {}, media = null) {
   if (name === 'search_prompts') return formatSearch(library, search(library, input), input);
   if (name === 'list_facets') return formatFacets(library);
   if (name === 'get_prompts') {
     const ids = idsFrom(input.ids ?? []).slice(0, 10);
     if (!ids.length) throw new Error('Pass at least one id.');
-    return ids.map(id => library.byId.has(id) ? workMarkdown(library.byId.get(id), library.site) : `No work with id "${id}".`).join('\n---\n\n');
+    media ||= await fetchMedia(library, ids.filter(id => library.byId.has(id)));
+    return ids.map(id => library.byId.has(id) ? workMarkdown(library.byId.get(id), library.site, media.get(id)) : `No work with id "${id}".`).join('\n---\n\n');
   }
   throw new Error(`Unknown tool: ${name}`);
 }
@@ -303,14 +345,14 @@ export function createServer(getLibrary) {
       protocolVersion: PROTOCOLS.includes(params.protocolVersion) ? params.protocolVersion : PROTOCOLS[0],
       capabilities: { tools: {} },
       serverInfo: { name: 'gloria-prompts', title: '光彩跃然 · 影像灵感库', version: VERSION },
-      instructions: 'Use search_prompts to find AI video/image prompts, then get_prompts for full text. Search in English and Chinese. Always give the user the gallery link and credit the author.',
+      instructions: 'Use search_prompts to find AI video/image prompts by theme or by task, then get_prompts on about four picks for their full prompts and images. Search in English and Chinese. Show each pick with its image and prompt, give the gallery link and credit the author.',
     });
     if (method === 'ping') return reply({});
     if (method === 'tools/list') return reply({ tools: TOOLS });
     if (method === 'tools/call') {
       try {
         if (!TOOLS.some(tool => tool.name === params.name)) return fail(-32602, `Unknown tool: ${params.name}`);
-        return reply({ content: [{ type: 'text', text: runTool(await getLibrary(), params.name, params.arguments || {}) }] });
+        return reply({ content: [{ type: 'text', text: await runTool(await getLibrary(), params.name, params.arguments || {}) }] });
       } catch (error) {
         return reply({ content: [{ type: 'text', text: error.message }], isError: true });
       }
@@ -344,7 +386,8 @@ function serve(options) {
 const HELP = `光彩跃然 · 影像灵感库: search ~9,000 AI video and image prompts.
 
   node gloria.mjs search <keywords...> [filters]   ranked results with ids and links
-  node gloria.mjs show <id|link> [...]              full prompt text and credits
+  node gloria.mjs show <id|link> [...]              full prompt, credits, image and video links
+  node gloria.mjs show <ids...> --save <dir>       also download the cover images into <dir>
   node gloria.mjs facets                            models, methods, sources, tags with counts
   node gloria.mjs mcp                               run as an MCP server over stdio
 
@@ -354,7 +397,7 @@ Other:   --json  --refresh (ignore the 6-hour cache)  --data <file or URL>
 
 Keywords are all required; "quoted phrase" keeps words together, -word excludes.
 Most prompts are in English: try both languages (霓虹 neon, 雨夜 "rainy night").`;
-const VALUES = new Set(['model', 'method', 'source', 'tag', 'kind', 'media', 'sort', 'seed', 'limit', 'offset', 'data']);
+const VALUES = new Set(['model', 'method', 'source', 'tag', 'kind', 'media', 'sort', 'seed', 'limit', 'offset', 'data', 'save']);
 const FLAGS = new Set(['json', 'refresh', 'help']);
 
 export function parseArgs(argv) {
@@ -386,8 +429,11 @@ async function main(argv) {
   if (command === 'show') {
     const ids = idsFrom(args._);
     if (!ids.length) throw new Error('show needs at least one id');
-    if (args.json) return console.log(JSON.stringify(ids.map(id => library.byId.get(id) || { id, missing: true }), null, 2));
-    return console.log(runTool(library, 'get_prompts', { ids }));
+    const media = await fetchMedia(library, ids.filter(id => library.byId.has(id)));
+    if (args.json) console.log(JSON.stringify(ids.map(id => library.byId.has(id) ? { ...library.byId.get(id), links: media.get(id) } : { id, missing: true }), null, 2));
+    else console.log(await runTool(library, 'get_prompts', { ids }, media));
+    if (args.save) for (const file of await saveImages(media, args.save)) console.log(`saved ${file}`);
+    return;
   }
   const query = { ...args, query: args._.join(' ') };
   const result = search(library, query);

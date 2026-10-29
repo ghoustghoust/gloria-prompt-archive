@@ -4,7 +4,8 @@ import { parseLibrary, workMarkdown, formatFacets } from '../plugin/skills/glori
 import { statsSVG } from './stats-svg.mjs';
 
 // Plain-text copies of the published catalog for coding agents and README badges.
-// Media links are left out: they are signed Feishu URLs that expire within a day.
+// Media links are signed Feishu URLs that expire within a day, so prompts.json (cached by agents for
+// hours) leaves them out; small per-work media files and the Markdown pages carry this sync's links.
 const site = (process.env.SITE_URL || 'https://seasnakes.github.io/gloria-prompt-archive/').replace(/\/*$/, '/');
 const dist = process.argv[2] || 'dist';
 const catalog = JSON.parse(fs.readFileSync(path.join(dist, 'data/catalog.json'), 'utf8'));
@@ -33,8 +34,14 @@ const out = path.join(dist, 'agent');
 fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(path.join(out, 'works'), { recursive: true });
 fs.mkdirSync(path.join(out, 'badges'), { recursive: true });
+fs.mkdirSync(path.join(out, 'media'), { recursive: true });
 fs.writeFileSync(path.join(out, 'prompts.json'), text);
-for (const item of library.items) fs.writeFileSync(path.join(out, 'works', `${item.id}.md`), workMarkdown(item, site));
+const absolute = value => value ? new URL(value, site).href : '';
+for (const item of catalog.items) {
+  const media = { id: item.id, cover: absolute(item.cover), video: absolute(item.video), images: (item.images || []).map(absolute).filter(Boolean), generatedCover: !!item.generatedCover, expiresAt: catalog.mediaExpiresAt || null };
+  fs.writeFileSync(path.join(out, 'media', `${item.id}.json`), JSON.stringify(media) + '\n');
+  fs.writeFileSync(path.join(out, 'works', `${item.id}.md`), workMarkdown(library.byId.get(item.id), site, media));
+}
 
 const facets = Object.fromEntries(Object.entries(library.facets).map(([key, counts]) => [key, Object.fromEntries(counts)]));
 fs.writeFileSync(path.join(out, 'facets.json'), JSON.stringify({ updatedAt: catalog.updatedAt, count: records.length, ...facets }, null, 2) + '\n');
@@ -65,7 +72,8 @@ Most prompts are written in English and many titles in Chinese. Search with keyw
 
 - [prompts.json](${site}agent/prompts.json): every work with its full prompt, one record per line, about ${mb} MB (gzip on the wire). Fields: id, title, kind (prompt | reference), model, modelVersion, method, tags, author, source, sourceUrl, status, media, width, height, duration, createdAt, prompt, negativePrompt, description, usage.
 - [facets.json](${site}agent/facets.json): every filter value with counts.
-- One work as Markdown: ${site}agent/works/{id}.md (ids are 14 hex characters).
+- One work as Markdown: ${site}agent/works/{id}.md (ids are 14 hex characters), with its cover image and video links.
+- Current image and video links for one work: ${site}agent/media/{id}.json. They expire about a day after each sync, so fetch them when you show a work rather than storing them.
 - Gallery link to share with people: ${site}#work/{id}
 
 ## Filter values
@@ -88,5 +96,5 @@ Most prompts are written in English and many titles in Chinese. Search with keyw
 Prompts, videos and images belong to their authors. When you show or adapt a prompt, name the author and link the original post. The library does not promise that a prompt reproduces the effect.
 `);
 
-fs.writeFileSync(path.join(out, 'README.txt'), formatFacets(library) + `\n\nFiles: prompts.json (full text), facets.json, works/{id}.md. Start at ${site}llms.txt\n`);
+fs.writeFileSync(path.join(out, 'README.txt'), formatFacets(library) + `\n\nFiles: prompts.json (full text), facets.json, works/{id}.md, media/{id}.json (image and video links for this sync). Start at ${site}llms.txt\n`);
 console.log(`Agent files: ${number(records.length)} works, prompts.json ${mb} MB, ${number(records.length)} Markdown pages, llms.txt, badges, stats.svg.`);

@@ -27,7 +27,8 @@ export function startIntro() {
   const english = language() === 'en';
   const pages = POEM.pages[language()].map(lines => lines.join('<br>'));
   type(document.querySelector('#hero-poem'), pages, {
-    strings: pages.map(page => page.replaceAll('<br>', '^500<br>')),
+    // Pause after the tag: Typed.js only skips a whole tag before handling a pause, so "^500<br>" flashes a "<".
+    strings: pages.map(page => page.replaceAll('<br>', '<br>^500')),
     typeSpeed: english ? 45 : 100, backSpeed: english ? 12 : 30, backDelay: 4200, startDelay: 300, loop: true,
   })();
   reduced.addEventListener('change', event => { if (event.matches) writers.forEach(w => { w.instance?.destroy(); w.instance = null; w.output.innerHTML = w.html; }); });

@@ -72,7 +72,7 @@ You can also skip the website and hand the job to Claude Code, Codex or another 
 
 > Give me five random image-to-video prompts with a cinematic feel.
 
-The agent searches in English and Chinese, reads the full prompts, picks a few and gives you their links and authors. Ask it to rewrite one for your own subject and it will.
+Ask by theme (a subject, mood or look) or by task (what you're making: a product ad, a music video, camera moves). The agent searches in English and Chinese, reads the full prompts and comes back with about four picks, each with its image, its full prompt, the author and a link. Ask it to rewrite one for your own subject and it will.
 
 ### Claude Code
 
@@ -84,7 +84,7 @@ claude plugin marketplace add seasnakes/gloria-prompt-archive
 claude plugin install gloria-prompts@seasnake
 ```
 
-This installs a skill and an MCP server with three tools: `search_prompts` to search, `get_prompts` to read full prompts, and `list_facets` to list every model, method and tag.
+This installs a skill and an MCP server with three tools: `search_prompts` to search, `get_prompts` to read full prompts with their images and video links, and `list_facets` to list every model, method and tag.
 
 ### Codex, Cursor and other agents
 
@@ -126,10 +126,11 @@ The site publishes plain-text versions for agents. Any agent that can browse can
 |---|---|
 | [`llms.txt`](https://seasnakes.github.io/gloria-prompt-archive/llms.txt) | How to use the data, plus every filter value |
 | [`agent/prompts.json`](https://seasnakes.github.io/gloria-prompt-archive/agent/prompts.json) | Every prompt, one per line, ready for `grep` |
-| `agent/works/<id>.md` | One work. Take a gallery link, swap `#work/` for `agent/works/` and add `.md` |
+| `agent/works/<id>.md` | One work with its image. Take a gallery link, swap `#work/` for `agent/works/` and add `.md` |
+| `agent/media/<id>.json` | One work's current image and video links |
 | [`agent/facets.json`](https://seasnakes.github.io/gloria-prompt-archive/agent/facets.json) | How many works each model, method and tag has |
 
-These files come from the same build as the site, so they always match it. Video and image links are left out because they're temporary Feishu links that expire within a day. To see a work, open its gallery link.
+These files come from the same build as the site, so they always match it. Image and video links are temporary Feishu links that expire about a day after each sync, so `prompts.json` leaves them out and the per-work files carry the current ones. The gallery link always works.
 
 ## Where the data comes from
 
@@ -153,7 +154,7 @@ Then open http://127.0.0.1:5182/ . The repo ships a 46-work sample; the full lib
 
 ## Changelog
 
-- **2026-10-29** · An English interface with a 中/EN switch. The home page types out the whole poem the blue background came from. The logo now links to X.
+- **2026-10-29** · An English interface with a 中/EN switch. The home page types out the whole poem the blue background came from. The logo now links to X. A back-to-top button. Agents now come back with about four picks, each with its image and full prompt.
 - **2026-10-28** · Agents can search the library: a skill, an MCP server, `llms.txt` and a Markdown page per work. New README, English first.
 - **2026-10-23** · Added the 15 motion-graphics styles from [Vincentwei1021/mg-styles-15](https://github.com/Vincentwei1021/mg-styles-15), with prompts, sample videos and covers ([MIT licence](public/licenses/mg-styles-15-MIT.txt)).
 - **2026-10-11** · Anonymous likes and a most-liked sort.
