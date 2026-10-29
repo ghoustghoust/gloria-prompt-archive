@@ -432,7 +432,7 @@ async function main(argv) {
     const media = await fetchMedia(library, ids.filter(id => library.byId.has(id)));
     if (args.json) console.log(JSON.stringify(ids.map(id => library.byId.has(id) ? { ...library.byId.get(id), links: media.get(id) } : { id, missing: true }), null, 2));
     else console.log(await runTool(library, 'get_prompts', { ids }, media));
-    if (args.save) for (const file of await saveImages(media, args.save)) console.log(`saved ${file}`);
+    if (args.save) for (const file of await saveImages(media, args.save)) (args.json ? console.error : console.log)(`saved ${file}`);   // keep --json output parseable
     return;
   }
   const query = { ...args, query: args._.join(' ') };
