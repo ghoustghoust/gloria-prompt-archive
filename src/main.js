@@ -271,16 +271,20 @@ document.addEventListener('keydown', event => {
 });
 function readHash() { detailTransition.cancel(); if (location.hash.startsWith('#work/')) { const id = location.hash.slice(6); if (items.some(item => item.id === id)) openWork(id); else toast(t('toast.missing')); } else if (dialog.open) closeWork(false); }
 window.addEventListener('popstate', readHash);
-let searchIndexFrame = 0;
+let searchIndexHandle = 0;
+const searchIndexIdle = window.requestIdleCallback
+  ? callback => window.requestIdleCallback(callback, { timeout: 1200 })
+  : callback => setTimeout(() => callback({ timeRemaining: () => 2 }), 16);
 function scheduleSearchIndex() {
-  cancelAnimationFrame(searchIndexFrame);
+  if (searchIndexHandle) (window.cancelIdleCallback || clearTimeout)(searchIndexHandle);
   let index = 0;
-  const step = () => {
-    const start = performance.now();
-    while (index < items.length && performance.now() - start < 6) indexItem(items[index++]);
-    searchIndexFrame = index < items.length ? requestAnimationFrame(step) : 0;
+  const step = deadline => {
+    const budget = Math.min(4, deadline.timeRemaining ? deadline.timeRemaining() : 2);
+    const end = performance.now() + budget;
+    while (index < items.length && performance.now() < end) indexItem(items[index++]);
+    searchIndexHandle = index < items.length ? searchIndexIdle(step) : 0;
   };
-  searchIndexFrame = requestAnimationFrame(step);
+  searchIndexHandle = searchIndexIdle(step);
 }
 async function loadCatalog() {
   $('#catalog-error').hidden = true; $('#result-count').textContent = t('result.loading');
