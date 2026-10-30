@@ -1,22 +1,23 @@
 <div align="center">
 
-<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/logo.svg" width="88" alt="SEASNAKE"></a>
+<a href="https://ghoustghoust.github.io/gloria-prompt-archive/"><img src="docs/logo.svg" width="88" alt="SEASNAKE"></a>
 
 # 光彩跃然 · 影像灵感库
 
 **AI 视频和图像提示词的收藏夹，每一条都写着作者和出处。**<br>
+<sub>这是 <a href="https://github.com/ghoustghoust">ghoustghoust</a> 的部署副本，线上站点：<a href="https://ghoustghoust.github.io/gloria-prompt-archive/">ghoustghoust.github.io/gloria-prompt-archive</a> · 原始项目与整理者：<a href="https://github.com/seasnakes/gloria-prompt-archive">seasnakes/gloria-prompt-archive</a></sub><br>
 <sub>Seedance、GPT Image、Claude Opus、MiniMax 等 · 网页上能搜，也能交给 coding agent 搜 · <a href="README.md">English</a></sub>
 
-<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img alt="打开灵感库" src="https://img.shields.io/badge/%E2%96%B6%20%E6%89%93%E5%BC%80%E7%81%B5%E6%84%9F%E5%BA%93-2f6bff?style=for-the-badge"></a>
+<a href="https://ghoustghoust.github.io/gloria-prompt-archive/"><img alt="打开灵感库" src="https://img.shields.io/badge/%E2%96%B6%20%E6%89%93%E5%BC%80%E7%81%B5%E6%84%9F%E5%BA%93-2f6bff?style=for-the-badge"></a>
 <a href="README.md"><img alt="English README" src="https://img.shields.io/badge/README-English-555?style=for-the-badge"></a>
-<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img alt="收录数量" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fseasnakes.github.io%2Fgloria-prompt-archive%2Fagent%2Fbadges%2Fworks.json&style=for-the-badge"></a>
-<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img alt="完整提示词" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fseasnakes.github.io%2Fgloria-prompt-archive%2Fagent%2Fbadges%2Fprompts.json&style=for-the-badge"></a>
-<a href="https://github.com/seasnakes/gloria-prompt-archive/actions/workflows/pages.yml"><img alt="最近同步" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fseasnakes.github.io%2Fgloria-prompt-archive%2Fagent%2Fbadges%2Fupdated.json&style=for-the-badge"></a>
+<a href="https://ghoustghoust.github.io/gloria-prompt-archive/"><img alt="收录数量" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fghoustghoust.github.io%2Fgloria-prompt-archive%2Fagent%2Fbadges%2Fworks.json&style=for-the-badge"></a>
+<a href="https://ghoustghoust.github.io/gloria-prompt-archive/"><img alt="完整提示词" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fghoustghoust.github.io%2Fgloria-prompt-archive%2Fagent%2Fbadges%2Fprompts.json&style=for-the-badge"></a>
+<a href="https://github.com/ghoustghoust/gloria-prompt-archive/actions/workflows/deploy.yml"><img alt="最近同步" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fghoustghoust.github.io%2Fgloria-prompt-archive%2Fagent%2Fbadges%2Fupdated.json&style=for-the-badge"></a>
 
 <a href="#让-ai-帮你找"><img alt="Agent Skill" src="https://img.shields.io/badge/Agent%20Skill-Claude%20Code%20%C2%B7%20Codex-0b1a33?style=flat-square"></a>
 <a href="#只要-mcp"><img alt="MCP" src="https://img.shields.io/badge/MCP-stdio-0b1a33?style=flat-square"></a>
-<a href="https://seasnakes.github.io/gloria-prompt-archive/llms.txt"><img alt="llms.txt" src="https://img.shields.io/badge/llms.txt-%E2%9C%93-0b1a33?style=flat-square"></a>
-<a href="https://github.com/seasnakes/gloria-prompt-archive/actions/workflows/pages.yml"><img alt="同步状态" src="https://img.shields.io/github/actions/workflow/status/seasnakes/gloria-prompt-archive/pages.yml?branch=main&label=%E6%AF%8F%E5%85%AD%E5%B0%8F%E6%97%B6%E5%90%8C%E6%AD%A5&style=flat-square"></a>
+<a href="https://ghoustghoust.github.io/gloria-prompt-archive/llms.txt"><img alt="llms.txt" src="https://img.shields.io/badge/llms.txt-%E2%9C%93-0b1a33?style=flat-square"></a>
+<a href="https://github.com/ghoustghoust/gloria-prompt-archive/actions/workflows/deploy.yml"><img alt="同步状态" src="https://img.shields.io/github/actions/workflow/status/ghoustghoust/gloria-prompt-archive/deploy.yml?branch=main&label=%E6%AF%8F%E5%85%AD%E5%B0%8F%E6%97%B6%E5%90%8C%E6%AD%A5&style=flat-square"></a>
 <a href="https://github.com/seasnakes/gloria-prompt-archive/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/seasnakes/gloria-prompt-archive?style=flat-square&color=f5b700"></a>
 <a href="https://x.com/snakeseas"><img alt="X" src="https://img.shields.io/badge/X-@snakeseas-000?style=flat-square&logo=x&logoColor=white"></a>
 <a href="https://space.bilibili.com/486682682"><img alt="B站" src="https://img.shields.io/badge/B%E7%AB%99-SeASnAkEss-00a1d6?style=flat-square&logo=bilibili&logoColor=white"></a>
@@ -26,7 +27,7 @@
 
 </div>
 
-<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/hero.jpg" alt="光彩跃然首页：蓝色流体背景上的宋体标题"></a>
+<a href="https://ghoustghoust.github.io/gloria-prompt-archive/"><img src="docs/hero.jpg" alt="光彩跃然首页：蓝色流体背景上的宋体标题"></a>
 
 ## 这是什么
 
@@ -34,7 +35,7 @@
 
 收的主要是 AI 视频和图像的提示词。Seedance / 即梦最多，然后是 GPT Image、Claude Opus 5.5 写代码做出来的动画、MiniMax H3。大部分是 X 和 LINUX DO 上的公开帖子，很多是顺着 YouMind、Prompt Motion 这些站点和几个开源仓库成批找来的。每一条都留着作者名字和原帖链接，视频和图在网页上能直接看。
 
-<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="https://seasnakes.github.io/gloria-prompt-archive/agent/stats.svg" alt="收录统计：按模型、生成方式和风格标签"></a>
+<a href="https://ghoustghoust.github.io/gloria-prompt-archive/"><img src="https://ghoustghoust.github.io/gloria-prompt-archive/agent/stats.svg" alt="收录统计：按模型、生成方式和风格标签"></a>
 
 <sub>这张图和上面的数字跟着网站一起更新。</sub>
 
@@ -48,11 +49,11 @@
 ## 在网页上找
 
 <table><tr>
-<td width="50%" valign="top"><a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/popular.jpg" alt="画廊按最多点赞排序，卡片左上角显示点赞数"></a><br><b>最多点赞</b><br><sub>默认的排序，大家点赞最多的在前面。</sub></td>
-<td width="50%" valign="top"><a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/gallery.jpg" alt="画廊按最近收录排序：瀑布流卡片，顶部是搜索框、筛选和排序"></a><br><b>最近收录</b><br><sub>新收进来的在前面。</sub></td>
+<td width="50%" valign="top"><a href="https://ghoustghoust.github.io/gloria-prompt-archive/"><img src="docs/popular.jpg" alt="画廊按最多点赞排序，卡片左上角显示点赞数"></a><br><b>最多点赞</b><br><sub>默认的排序，大家点赞最多的在前面。</sub></td>
+<td width="50%" valign="top"><a href="https://ghoustghoust.github.io/gloria-prompt-archive/"><img src="docs/gallery.jpg" alt="画廊按最近收录排序：瀑布流卡片，顶部是搜索框、筛选和排序"></a><br><b>最近收录</b><br><sub>新收进来的在前面。</sub></td>
 </tr></table>
 
-[打开灵感库](https://seasnakes.github.io/gloria-prompt-archive/)，往下滑就是画廊。网页有中文和英文两套界面，右上角切换。
+[打开灵感库](https://ghoustghoust.github.io/gloria-prompt-archive/)，往下滑就是画廊。网页有中文和英文两套界面，右上角切换。
 
 - 搜索框会搜标题、提示词全文、作者和标签。提示词大多是英文，中文搜不到就换英文，比如「霓虹」搜不够，再搜 neon。
 - 「筛选」里能按模型、生成方式、来源、风格标签组合着找。
@@ -122,11 +123,11 @@ node ~/gloria.mjs search 霓虹 雨夜 --model seedance
 
 | 地址 | 内容 |
 |---|---|
-| [`llms.txt`](https://seasnakes.github.io/gloria-prompt-archive/llms.txt) | 怎么用，以及所有筛选项 |
-| [`agent/prompts.json`](https://seasnakes.github.io/gloria-prompt-archive/agent/prompts.json) | 全部提示词，一行一条，能直接 `grep` |
+| [`llms.txt`](https://ghoustghoust.github.io/gloria-prompt-archive/llms.txt) | 怎么用，以及所有筛选项 |
+| [`agent/prompts.json`](https://ghoustghoust.github.io/gloria-prompt-archive/agent/prompts.json) | 全部提示词，一行一条，能直接 `grep` |
 | `agent/works/作品ID.md` | 单条作品，带图。把作品链接里的 `#work/` 换成 `agent/works/`，末尾加 `.md` |
 | `agent/media/作品ID.json` | 单条作品当前的图片和视频链接 |
-| [`agent/facets.json`](https://seasnakes.github.io/gloria-prompt-archive/agent/facets.json) | 每个模型、方式、标签各有多少条 |
+| [`agent/facets.json`](https://ghoustghoust.github.io/gloria-prompt-archive/agent/facets.json) | 每个模型、方式、标签各有多少条 |
 
 这些文件和网站同一次构建生成，内容一致。图片和视频用的是飞书临时链接，每次同步后大约一天过期，所以 `prompts.json` 里不放，单条作品的文件里放当前有效的。作品的网页链接一直有效。
 

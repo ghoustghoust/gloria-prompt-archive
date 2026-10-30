@@ -1,22 +1,23 @@
 <div align="center">
 
-<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/logo.svg" width="88" alt="SEASNAKE"></a>
+<a href="https://ghoustghoust.github.io/gloria-prompt-archive/"><img src="docs/logo.svg" width="88" alt="SEASNAKE"></a>
 
 # GLORIA Prompt Archive
 
 **AI video and image prompts I've collected, each one credited to its author with a link to the original post.**<br>
+<sub>This is <a href="https://github.com/ghoustghoust">ghoustghoust</a>'s deployment copy. Live site: <a href="https://ghoustghoust.github.io/gloria-prompt-archive/">ghoustghoust.github.io/gloria-prompt-archive</a> · Original project and curator: <a href="https://github.com/seasnakes/gloria-prompt-archive">seasnakes/gloria-prompt-archive</a></sub><br>
 <sub>光彩跃然 · 影像灵感库 · Seedance, GPT Image, Claude Opus, MiniMax and more · 中文用户请看 <a href="README.zh-CN.md">简体中文说明</a></sub>
 
-<a href="https://seasnakes.github.io/gloria-prompt-archive/?lang=en"><img alt="Open the gallery" src="https://img.shields.io/badge/%E2%96%B6%20Open%20the%20gallery-2f6bff?style=for-the-badge"></a>
+<a href="https://ghoustghoust.github.io/gloria-prompt-archive/?lang=en"><img alt="Open the gallery" src="https://img.shields.io/badge/%E2%96%B6%20Open%20the%20gallery-2f6bff?style=for-the-badge"></a>
 <a href="README.zh-CN.md"><img alt="简体中文" src="https://img.shields.io/badge/README-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-555?style=for-the-badge"></a>
-<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img alt="Works" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fseasnakes.github.io%2Fgloria-prompt-archive%2Fagent%2Fbadges%2Fworks-en.json&style=for-the-badge"></a>
-<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img alt="Full prompts" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fseasnakes.github.io%2Fgloria-prompt-archive%2Fagent%2Fbadges%2Fprompts-en.json&style=for-the-badge"></a>
-<a href="https://github.com/seasnakes/gloria-prompt-archive/actions/workflows/pages.yml"><img alt="Last sync" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fseasnakes.github.io%2Fgloria-prompt-archive%2Fagent%2Fbadges%2Fupdated-en.json&style=for-the-badge"></a>
+<a href="https://ghoustghoust.github.io/gloria-prompt-archive/"><img alt="Works" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fghoustghoust.github.io%2Fgloria-prompt-archive%2Fagent%2Fbadges%2Fworks-en.json&style=for-the-badge"></a>
+<a href="https://ghoustghoust.github.io/gloria-prompt-archive/"><img alt="Full prompts" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fghoustghoust.github.io%2Fgloria-prompt-archive%2Fagent%2Fbadges%2Fprompts-en.json&style=for-the-badge"></a>
+<a href="https://github.com/ghoustghoust/gloria-prompt-archive/actions/workflows/deploy.yml"><img alt="Last sync" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fghoustghoust.github.io%2Fgloria-prompt-archive%2Fagent%2Fbadges%2Fupdated-en.json&style=for-the-badge"></a>
 
 <a href="#let-your-agent-search"><img alt="Agent Skill" src="https://img.shields.io/badge/Agent%20Skill-Claude%20Code%20%C2%B7%20Codex-0b1a33?style=flat-square"></a>
 <a href="#just-the-mcp-server"><img alt="MCP" src="https://img.shields.io/badge/MCP-stdio-0b1a33?style=flat-square"></a>
-<a href="https://seasnakes.github.io/gloria-prompt-archive/llms.txt"><img alt="llms.txt" src="https://img.shields.io/badge/llms.txt-%E2%9C%93-0b1a33?style=flat-square"></a>
-<a href="https://github.com/seasnakes/gloria-prompt-archive/actions/workflows/pages.yml"><img alt="Sync status" src="https://img.shields.io/github/actions/workflow/status/seasnakes/gloria-prompt-archive/pages.yml?branch=main&label=sync%20every%206%20h&style=flat-square"></a>
+<a href="https://ghoustghoust.github.io/gloria-prompt-archive/llms.txt"><img alt="llms.txt" src="https://img.shields.io/badge/llms.txt-%E2%9C%93-0b1a33?style=flat-square"></a>
+<a href="https://github.com/ghoustghoust/gloria-prompt-archive/actions/workflows/deploy.yml"><img alt="Sync status" src="https://img.shields.io/github/actions/workflow/status/ghoustghoust/gloria-prompt-archive/deploy.yml?branch=main&label=sync%20every%206%20h&style=flat-square"></a>
 <a href="https://github.com/seasnakes/gloria-prompt-archive/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/seasnakes/gloria-prompt-archive?style=flat-square&color=f5b700"></a>
 <a href="https://x.com/snakeseas"><img alt="X" src="https://img.shields.io/badge/X-@snakeseas-000?style=flat-square&logo=x&logoColor=white"></a>
 <a href="https://space.bilibili.com/486682682"><img alt="Bilibili" src="https://img.shields.io/badge/Bilibili-SeASnAkEss-00a1d6?style=flat-square&logo=bilibili&logoColor=white"></a>
@@ -26,7 +27,7 @@
 
 </div>
 
-<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/hero.jpg" alt="The GLORIA home page: the title 光彩跃然 over a moving blue fluid"></a>
+<a href="https://ghoustghoust.github.io/gloria-prompt-archive/"><img src="docs/hero.jpg" alt="The GLORIA home page: the title 光彩跃然 over a moving blue fluid"></a>
 
 ## What this is
 
@@ -34,7 +35,7 @@ I keep a prompt library in a Feishu (Lark) base. This site is the public version
 
 It's mostly prompts for AI video and images. Seedance (即梦) has the most, then GPT Image, short films Claude Opus 5.5 made by writing code, and MiniMax H3. Most entries are public posts from X and LINUX DO, and many of them I found in batches through sites like YouMind and Prompt Motion or in open-source repos. Every entry keeps the author's name and a link to the original post, and the video or image plays right on the page.
 
-<a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="https://seasnakes.github.io/gloria-prompt-archive/agent/stats-en.svg" alt="What the library holds, by model, method and style tag"></a>
+<a href="https://ghoustghoust.github.io/gloria-prompt-archive/"><img src="https://ghoustghoust.github.io/gloria-prompt-archive/agent/stats-en.svg" alt="What the library holds, by model, method and style tag"></a>
 
 <sub>The chart and the numbers at the top update with the site.</sub>
 
@@ -50,11 +51,11 @@ The site has a Chinese and an English interface; the button at the top right swi
 ## Browsing on the web
 
 <table><tr>
-<td width="50%" valign="top"><a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/popular.jpg" alt="The gallery sorted by most liked, with like counts on each card"></a><br><b>Most liked</b> · 最多点赞<br><sub>The default order: what visitors liked most comes first.</sub></td>
-<td width="50%" valign="top"><a href="https://seasnakes.github.io/gloria-prompt-archive/"><img src="docs/gallery.jpg" alt="The gallery sorted by newest: a masonry grid of cards under a search box, filters and a sort menu"></a><br><b>Newest</b> · 最近收录<br><sub>The latest additions first.</sub></td>
+<td width="50%" valign="top"><a href="https://ghoustghoust.github.io/gloria-prompt-archive/"><img src="docs/popular.jpg" alt="The gallery sorted by most liked, with like counts on each card"></a><br><b>Most liked</b> · 最多点赞<br><sub>The default order: what visitors liked most comes first.</sub></td>
+<td width="50%" valign="top"><a href="https://ghoustghoust.github.io/gloria-prompt-archive/"><img src="docs/gallery.jpg" alt="The gallery sorted by newest: a masonry grid of cards under a search box, filters and a sort menu"></a><br><b>Newest</b> · 最近收录<br><sub>The latest additions first.</sub></td>
 </tr></table>
 
-[Open the gallery](https://seasnakes.github.io/gloria-prompt-archive/?lang=en) and scroll down.
+[Open the gallery](https://ghoustghoust.github.io/gloria-prompt-archive/?lang=en) and scroll down.
 
 - The search box looks through titles, full prompt text, authors and tags. Most prompts are in English, so English keywords usually find more than Chinese ones.
 - Filter narrows things down by model, method, source and style tag. Model, method and tag names have English labels, and English names work in the search box too.
@@ -124,11 +125,11 @@ The site publishes plain-text versions for agents. Any agent that can browse can
 
 | URL | What's in it |
 |---|---|
-| [`llms.txt`](https://seasnakes.github.io/gloria-prompt-archive/llms.txt) | How to use the data, plus every filter value |
-| [`agent/prompts.json`](https://seasnakes.github.io/gloria-prompt-archive/agent/prompts.json) | Every prompt, one per line, ready for `grep` |
+| [`llms.txt`](https://ghoustghoust.github.io/gloria-prompt-archive/llms.txt) | How to use the data, plus every filter value |
+| [`agent/prompts.json`](https://ghoustghoust.github.io/gloria-prompt-archive/agent/prompts.json) | Every prompt, one per line, ready for `grep` |
 | `agent/works/<id>.md` | One work with its image. Take a gallery link, swap `#work/` for `agent/works/` and add `.md` |
 | `agent/media/<id>.json` | One work's current image and video links |
-| [`agent/facets.json`](https://seasnakes.github.io/gloria-prompt-archive/agent/facets.json) | How many works each model, method and tag has |
+| [`agent/facets.json`](https://ghoustghoust.github.io/gloria-prompt-archive/agent/facets.json) | How many works each model, method and tag has |
 
 These files come from the same build as the site, so they always match it. Image and video links are temporary Feishu links that expire about a day after each sync, so `prompts.json` leaves them out and the per-work files carry the current ones. The gallery link always works.
 
