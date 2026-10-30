@@ -11,7 +11,7 @@ import { startGlassMotion, createDetailTransition } from './glass-motion.js';
 import { startIntro } from './intro.js';
 import { startPoem } from './poem.js';
 import { t, label, language, setLanguage, pickLanguage, translatePage, searchAlias } from './i18n.js';
-import { escapeHTML as esc, filterItems, summaryFor, safeURL } from './catalog.js';
+import { escapeHTML as esc, filterItems, indexItem, summaryFor, safeURL } from './catalog.js';
 import { createMasonry } from './masonry.js';
 import { createCoverLoader } from './gallery-media.js';
 import { startStickyFilters } from './sticky-filters.js';
@@ -36,6 +36,15 @@ const catalogURL = import.meta.env.VITE_CATALOG_URL || base + 'data/catalog.json
 const mediaURL = path => { if (!path) return ''; if (/^https:\/\//.test(path)) return safeURL(path) || ''; return new URL(base + path, location.href.split('#')[0]).href; };
 let items = [], filtered = [], limit = 24, current = null, modalItems = [], lastFocus, toastTimer;
 const filters = { kind: 'all', query: '', source: '', model: '', method: '', tag: '' };
+let filterCache = { key: '', query: '', results: null };
+function filteredItems() {
+  const key = [filters.kind, filters.source, filters.model, filters.method, filters.tag].join('\u0001');
+  const query = (filters.query || '').normalize('NFKC').toLocaleLowerCase().trim();
+  const reuse = !!query && filterCache.results && filterCache.key === key && query.startsWith(filterCache.query);
+  const results = filterItems(reuse ? filterCache.results : items, filters);
+  filterCache = { key, query, results };
+  return results;
+}
 const dialog = $('#work-dialog'), video = $('#work-video');
 const titleForKind = kind => kind === 'prompt' ? t('kind.prompt') : t('kind.reference');
 // An open dialog sits in the top layer, so the toast goes in as a popover from inside it (a z-index can't beat the dialog).
@@ -75,7 +84,7 @@ const likes=createLikesClient({api:import.meta.env.VITE_LIKES_URL || 'https://gl
 const detailLike=document.createElement('button');detailLike.className='work-like';$('.work-topline').append(detailLike);
 const sortControl=createSortControl($('.search-actions'),async value=>{if(value==='popular'){sortControl.busy=true;try{rankingCounts=await likes.ranking();}catch(error){sortControl.value='recent';toast(english?t('like.failed'):error.message);}finally{sortControl.busy=false;}}applyFilters();},'popular');
 // Most liked is the default. The first render waits up to 4 s for the ranking; if it fails, the gallery falls back to newest.
-const firstRanking=likes.ranking().then(counts=>{rankingCounts=counts;if(items.length&&sortControl.value==='popular')render();},()=>{if(sortControl.value==='popular')sortControl.value='recent';});
+const firstRanking=likes.ranking().then(counts=>{rankingCounts=counts;if(items.length&&sortControl.value==='popular')render();},()=>{if(sortControl.value==='popular'){sortControl.value='recent';if(items.length)render();}});
 $('.archive-footnote').textContent+=' '+t('footnote.likes');
 const workImage=document.createElement('img');workImage.id='work-image';workImage.hidden=true;$('.work-media').insertBefore(workImage,$('.video-surface'));
 const imageNav=document.createElement('div');imageNav.className='image-navigation';imageNav.hidden=true;imageNav.innerHTML=`<button data-image-step="-1" aria-label="${t('media.prevLabel')}">${t('media.prev')}</button><span></span><button data-image-step="1" aria-label="${t('media.nextLabel')}">${t('media.next')}</button>`;
@@ -103,7 +112,7 @@ function card(item) {
   return article;
 }
 function render(append = false) {
-  filtered = filterItems(items, filters);
+  filtered = filteredItems();
   if(sortControl.value==='popular'&&rankingCounts)filtered.sort((a,b)=>(rankingCounts.get(b.id)||0)-(rankingCounts.get(a.id)||0)||(a.order||0)-(b.order||0));
   const gallery = $('#gallery');
   const before = append ? gallery.children.length : 0;
@@ -262,12 +271,25 @@ document.addEventListener('keydown', event => {
 });
 function readHash() { detailTransition.cancel(); if (location.hash.startsWith('#work/')) { const id = location.hash.slice(6); if (items.some(item => item.id === id)) openWork(id); else toast(t('toast.missing')); } else if (dialog.open) closeWork(false); }
 window.addEventListener('popstate', readHash);
+let searchIndexFrame = 0;
+function scheduleSearchIndex() {
+  cancelAnimationFrame(searchIndexFrame);
+  let index = 0;
+  const step = () => {
+    const start = performance.now();
+    while (index < items.length && performance.now() - start < 6) indexItem(items[index++]);
+    searchIndexFrame = index < items.length ? requestAnimationFrame(step) : 0;
+  };
+  searchIndexFrame = requestAnimationFrame(step);
+}
 async function loadCatalog() {
   $('#catalog-error').hidden = true; $('#result-count').textContent = t('result.loading');
   try {
     const response = await fetch(catalogURL, { cache: 'no-cache' }); if (!response.ok) throw new Error('catalog');
     const catalog = await response.json(); if (catalog.schemaVersion !== 1 || !Array.isArray(catalog.items) || catalog.count !== catalog.items.length) throw new Error('schema');
-    items = catalog.items.map(item => ({ ...item, width: item.width || 4, height: item.height || 3, searchAlias: searchAlias(item) }));
+    items = catalog.items;
+    items.forEach(item => { item.width ||= 4; item.height ||= 3; item.searchAlias = searchAlias(item); });
+    filterCache = { key: '', query: '', results: null };
     const prompts = items.filter(item => item.prompt).length;
     $('#total-count').textContent = items.length;
     $('#hero-count').textContent = t('hero.count', { works: items.length, prompts });
@@ -275,8 +297,8 @@ async function loadCatalog() {
     $('[data-kind="all"] span').textContent = items.length; $('[data-kind="prompt"] span').textContent = prompts; $('[data-kind="reference"] span').textContent = items.length - prompts;
     ['source', 'model', 'method'].forEach(name => { const select = $(`#${name}-filter`); select.querySelectorAll('option:not(:first-child)').forEach(option => option.remove()); [...new Set([...(catalog.options?.[name] || []), ...items.map(item => item[name])])].filter(Boolean).forEach(value => select.add(new Option(label(value), value))); });
     $('#tag-filters').innerHTML = [...new Set([...(catalog.options?.tags || []), ...items.flatMap(item => item.tags)])].map(tag => `<button data-tag="${esc(tag)}" aria-pressed="false">${esc(label(tag))}</button>`).join('');
-    if (sortControl.value === 'popular' && !rankingCounts) await Promise.race([firstRanking, new Promise(resolve => setTimeout(resolve, 4000))]);
     applyFilters(); readHash();
+    scheduleSearchIndex();
   } catch { $('#catalog-error').hidden = false; $('#result-count').textContent = t('result.failed'); }
 }
 $('#retry-catalog').addEventListener('click', loadCatalog);

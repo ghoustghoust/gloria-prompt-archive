@@ -8,7 +8,8 @@ export function startBackground() {
   const toggle = document.querySelector('.ocean-toggle');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let fluid, frame = 0, timer, previous = null, last = 0, fpsAt = 0, frames = 0;
-  let paused = reducedMotion.matches, failed = false, modalOpen = false, dialogObserver;
+  let paused = reducedMotion.matches, failed = false, modalOpen = false, dialogObserver, galleryObserver;
+  let offscreen = document.documentElement.classList.contains('in-gallery');
   const abort = new AbortController();
   const listen = (target, name, fn, options = {}) => target.addEventListener(name, fn, { ...options, signal: abort.signal });
   const resetPointer = () => { previous = null; fluid?.targetTilt.set(0, 0); };
@@ -43,7 +44,7 @@ export function startBackground() {
   };
   const syncMotion = () => {
     cancelAnimationFrame(frame); frame = 0;
-    fluid.params.paused = failed || paused || document.hidden;
+    fluid.params.paused = failed || paused || document.hidden || offscreen;
     resetPointer();
     fluid.pendingSplats.length = 0;
     last = fpsAt = performance.now(); frames = 0;
@@ -68,6 +69,12 @@ export function startBackground() {
     dialogObserver = new MutationObserver(syncDialog);
     document.querySelectorAll('dialog').forEach(dialog => dialogObserver.observe(dialog, { attributes: true, attributeFilter: ['open'] }));
     syncDialog();
+    // The gallery scrolls over a static canvas; animating a full-screen fluid there is pure jank.
+    galleryObserver = new MutationObserver(() => {
+      offscreen = document.documentElement.classList.contains('in-gallery');
+      syncMotion();
+    });
+    galleryObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     listen(window, 'blur', resetPointer);
     listen(document.documentElement, 'pointerleave', resetPointer);
     listen(window, 'pointercancel', resetPointer);
@@ -101,7 +108,7 @@ export function startBackground() {
     });
     listen(window, 'pagehide', event => {
       cancelAnimationFrame(frame); frame = 0; clearTimeout(timer);
-      if (!event.persisted) { dialogObserver?.disconnect(); abort.abort(); fluid.dispose(); }
+      if (!event.persisted) { dialogObserver?.disconnect(); galleryObserver?.disconnect(); abort.abort(); fluid.dispose(); }
     });
     listen(window, 'pageshow', event => { if (event.persisted && !failed) syncMotion(); });
     syncMotion();

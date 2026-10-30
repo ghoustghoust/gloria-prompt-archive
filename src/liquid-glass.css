@@ -104,7 +104,7 @@
 .section-title button { border-radius: 12px; }
 
 @media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
-  .glass-visible .card-glass::before { filter: url(#gloria-glass-refraction); }
+  .card-glass.is-tilted::before { filter: url(#gloria-glass-refraction); }
   .card-glass.is-tilted { transform: translateY(-4px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)); }
 }
 @media (max-width:779px) {

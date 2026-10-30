@@ -5,7 +5,7 @@ import * as S from './shaders.js';
 export class BlueTears {
   constructor(canvas) {
     this.canvas = canvas;
-    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance', preserveDrawingBuffer: true });
+    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance' });
     if (!this.renderer.extensions.has('EXT_color_buffer_float')) {
       this.renderer.dispose();
       throw new Error('当前设备不支持浮点流体计算，请在开启硬件加速的新版 Chrome、Edge 或 Safari 中打开。');
@@ -141,7 +141,7 @@ export class BlueTears {
     const h = this.canvas.clientHeight || window.innerHeight;
     this.width = w; this.height = h; this.aspect = w/h;
     // Pixel and simulation budgets are independent of high-DPI phone displays.
-    this.pixelRatio = Math.min(window.devicePixelRatio || 1, w<700 ? 1.5 : 1.25);
+    this.pixelRatio = Math.min(window.devicePixelRatio || 1, w<700 ? 1.25 : 1);
     this.renderer.setPixelRatio(this.pixelRatio);
     this.renderer.setSize(w,h,false);
     const simShort = w<700 ? 176 : 224;
