@@ -1,3 +1,4 @@
+import { copyText, showManualCopy } from './clipboard.js';
 import './style.css';
 import './liquid-glass.css';
 import './compact-ui.css';
@@ -250,7 +251,7 @@ $('#retry-video').addEventListener('click', async () => {
   finally { button.disabled = false; }
   if (current?.id === id) setVideo(current);
 });
-async function copy(text, message) { try { await navigator.clipboard.writeText(text); toast(message); } catch { toast(t('toast.copyFailed')); } }
+async function copy(text, message) { if (await copyText(text)) toast(message); else showManualCopy(text); }
 $('#copy-prompt').addEventListener('click', () => current?.prompt && copy(current.prompt, t('toast.promptCopied')));
 $('#copy-negative').addEventListener('click', () => current?.negativePrompt && copy(current.negativePrompt, t('toast.negativeCopied')));
 $('#share-work').addEventListener('click', () => current && copy(new URL(`#work/${current.id}`, location.href).href, t('toast.linkCopied')));
