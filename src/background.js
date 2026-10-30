@@ -25,6 +25,7 @@ export function startBackground() {
     layer.dataset.state = 'fallback';
     toggle.hidden = true;
     document.body.classList.add('motion-paused');
+    document.documentElement.classList.add('low-fx');
     if (error) console.warn('Blue Tears background:', error.message);
   };
   const animate = now => {

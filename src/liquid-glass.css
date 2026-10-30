@@ -121,3 +121,21 @@
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
   .card-glass, #work-dialog, .search-box, .select-filters select { background: var(--raised); }
 }
+
+/* Software WebGL (SwiftShader / Microsoft Basic Render Driver) cannot composite the
+   full-screen fluid and dozens of backdrop filters at a usable frame rate. */
+:root.low-fx .ocean-background {
+  background:
+    radial-gradient(60% 45% at 20% 25%, #2a6ea8 0%, transparent 65%),
+    radial-gradient(55% 45% at 82% 72%, #123a60 0%, transparent 70%),
+    linear-gradient(160deg, #0a1b30, #07101e 72%);
+}
+:root.low-fx .ocean-background canvas { display: none !important; }
+:root.low-fx * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+:root.low-fx .glass-visible .card-glass::before,
+:root.low-fx .card-glass.is-tilted::before { filter: none !important; }
+:root.low-fx dialog::backdrop { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+:root.low-fx .filter-panel.is-fixed::before { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+:root.low-fx .card-glass { box-shadow: 0 5px 14px #0005; }
+:root.low-fx .card-glass:hover,
+:root.low-fx .work-card:focus-within .card-glass { box-shadow: 0 10px 22px #0006; }

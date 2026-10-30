@@ -16,6 +16,7 @@ import { createMasonry } from './masonry.js';
 import { createCoverLoader } from './gallery-media.js';
 import { startStickyFilters } from './sticky-filters.js';
 import { fitVideoLayout } from './video-layout.js';
+import { prefersLowEffects } from './perf.js';
 import { version } from '../package.json';
 
 const storedLanguage = (() => { try { return localStorage.getItem('gloria:lang'); } catch { return null; } })();
@@ -61,7 +62,15 @@ startPoem();
 $('.back-to-top').addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 });
-import('./background.js').then(({ startBackground }) => startBackground()).catch(() => { $('.ocean-background').dataset.state = 'fallback'; });
+if (prefersLowEffects()) {
+  document.documentElement.classList.add('low-fx');
+  document.body.classList.add('motion-paused');
+  $('.ocean-background').dataset.state = 'fallback';
+  $('.ocean-toggle').hidden = true;
+  console.info('GLORIA: low-effects mode (software WebGL renderer detected). Append ?lowfx=0 to force effects.');
+} else {
+  import('./background.js').then(({ startBackground }) => startBackground()).catch(() => { $('.ocean-background').dataset.state = 'fallback'; });
+}
 $('#site-version').textContent = `V${version}`;
 const masonry = createMasonry($('#gallery'));
 const covers = createCoverLoader(mediaURL, () => masonry.schedule());
