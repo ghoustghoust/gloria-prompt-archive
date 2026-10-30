@@ -1,0 +1,57 @@
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'README.md'
+      - 'README.zh-CN.md'
+      - 'docs/**'
+      - 'reports/**'
+  schedule:
+    - cron: '47 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Fetch the upstream public catalog
+        run: |
+          curl -fsSL --retry 3 --retry-delay 5 \
+            https://seasnakes.github.io/gloria-prompt-archive/data/catalog.json \
+            -o public/data/catalog.json
+          node -e "const c=JSON.parse(require('fs').readFileSync('public/data/catalog.json','utf8')); if(c.schemaVersion!==1||c.mediaMode!=='feishu-links'||!Array.isArray(c.items)||c.count!==c.items.length||!c.count) process.exit(1); console.log('Fetched catalog with', c.count, 'items')"
+      - run: npm run build
+        env:
+          VITE_LIKES_URL: ${{ vars.VITE_LIKES_URL }}
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
