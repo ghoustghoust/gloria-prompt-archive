@@ -62,6 +62,26 @@ npm run preview    # http://127.0.0.1:5183/ ，看实际构建结果
 
 常规内容同步和每六小时的链接续期仍然由 **Publish GitHub Pages** 负责。
 
+## Bilibili Toy 自动更新
+
+`Publish Bilibili Toy`（`.github/workflows/toy-publish.yml`）在正式分支的 `Publish GitHub Pages` 成功后运行，复用该次构建的完整目录，不重复读取飞书。流程会构建自带 `data/catalog.json` 的 Toy 包，并通过官方内容检查。图片和视频仍使用飞书临时链接；点赞服务独立运行。
+
+- 包和检查报告在 `.local/toy/gloria-toy.zip`、`.local/toy/package-report.json`，报告记录作品数、目录时间、媒体有效期和 SHA-256。校验入口、私有字段、重复编号及 50 MB 包体预算；媒体链接剩余不足 8 小时则停止，保留已发布版本。
+- 使用 GitHub 的 `bilibili-toy` 环境。创作者会话只存加密 secret `TOY_SESSION_TOKEN`，不进入源码、网页、日志或附件。失效时通过官方 `toy login` 重新授权后更新 secret。
+- 环境变量 `TOY_AUTO_SUBMIT=true` 时，成功同步后自动提交 B 站审核；为 false 时只生成预览。手动运行可以通过 `submit_for_review` 选择提交。审核通过后正式版才会变更，提交成功不等于审核通过。
+- Toy ID 固定为 `42481513136128`，slug 为 `gloria`。脚本先核对账号与目标 Toy。更新仅替换程序包，封面、图标、可见性保持现状。
+- 飞书媒体链接约 24 小时有效，定时同步不能保证 B 站审核耗时。若审核延迟超过链接有效期，目录仍可读取，但媒体需要新版本续期；自动流程不等于永久媒体托管。
+
+本地复用最近一次成功同步：
+
+```sh
+python3 scripts/prepare-toy-catalog.py --repository seasnakes/gloria-prompt-archive
+npm run build:toy
+python3 scripts/publish-toy.py --mode preview
+# 已获得发布授权后才提交；使用同一个已检查的包。
+TOY_SUBMIT_APPROVED=1 python3 scripts/publish-toy.py --mode submit
+```
+
 ## 给 agent 的文件
 
 `npm run build` 最后一步是 `scripts/build-agent-files.mjs`，从 `dist/data/catalog.json` 生成：
@@ -104,7 +124,7 @@ claude plugin validate .            # 检查 marketplace 和插件清单
 
 2026-10-11 加的匿名点赞和「最多点赞」排序。点赞存在单独的持久数据库，访客标识存在当前站点的浏览器存储里，换设备、换入口或清空浏览器数据后可能再点一次。重复请求只计一次，取消只影响自己的记录。网页只用访客自己的随机凭证，后台凭据不进浏览器。
 
-点赞接口默认 `https://gloria-likes-seasnake-1011.elatedeel.chatgpt.site`，本地用 `VITE_LIKES_URL` 指向测试服务（它只允许线上域名跨域，本地预览控制台会报 CORS 错，属正常）。Toy 构建用 `VITE_CATALOG_URL` 指向本仓库公开的目录，内容同步不用重新上传 Toy 包。
+点赞接口默认 `https://gloria-likes-seasnake-1011.elatedeel.chatgpt.site`，本地用 `VITE_LIKES_URL` 指向测试服务（它只允许线上域名跨域，本地预览控制台会报 CORS 错，属正常）。Toy 用 `npm run build:toy` 构建，作品目录随包上传，读取 `./data/catalog.json`；不再通过 GitHub Pages 加载作品目录。每次内容更新都需要重新上传并经 B 站审核。
 
 飞书「AI 页面搭建」的分享网页是另一套代码，要单独编辑发布。
 

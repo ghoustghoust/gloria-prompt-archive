@@ -1,0 +1,103 @@
+name: Publish Bilibili Toy
+on:
+  workflow_run:
+    workflows: [Publish GitHub Pages]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: 'Successful main-branch Publish GitHub Pages run ID; blank uses the latest'
+        type: string
+        default: ''
+      submit_for_review:
+        description: 'Submit this version for Bilibili review (otherwise preview only)'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: bilibili-gloria-toy
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Reuse the completed Feishu sync
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id || inputs.source_run_id }}
+        run: python3 scripts/prepare-toy-catalog.py --repository "$GITHUB_REPOSITORY" --run-id "$SOURCE_RUN_ID"
+      - name: Build a Toy with its own catalog
+        run: npm run build:toy
+      - name: Official Toy content check
+        run: |
+          curl -fsSL --max-time 60 https://raw.githubusercontent.com/bilibili/toy/ae156ecb3391dfb22bdd93d45d6b0067e1e5b723/skills/toy/scripts/toy_doctor.py -o "$RUNNER_TEMP/toy_doctor.py"
+          python3 "$RUNNER_TEMP/toy_doctor.py" .local/toy/dist --slug gloria --json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gloria-toy-candidate
+          path: |
+            .local/toy/gloria-toy.zip
+            .local/toy/package-report.json
+          include-hidden-files: true
+          retention-days: 1
+
+  preview-or-submit:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: bilibili-toy
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: gloria-toy-candidate
+          path: .local/toy
+      - name: Install the official Toy CLI
+        env:
+          VERSION: v0.6.4
+          BIN_DIR: ${{ runner.temp }}/toy-bin
+        run: |
+          curl -fsSL --max-time 60 https://boss.hdslb.com/toy-cli/toy/install.sh -o "$RUNNER_TEMP/install-toy.sh"
+          bash "$RUNNER_TEMP/install-toy.sh"
+          echo "$BIN_DIR" >> "$GITHUB_PATH"
+      - name: Verify the creator session on this runner
+        env:
+          TOY_SESSION_TOKEN: ${{ secrets.TOY_SESSION_TOKEN }}
+        run: python3 scripts/publish-toy.py --mode check-auth
+      - name: Upload the checked Toy package
+        env:
+          TOY_SESSION_TOKEN: ${{ secrets.TOY_SESSION_TOKEN }}
+          MANUAL_SUBMIT: ${{ inputs.submit_for_review }}
+          AUTO_SUBMIT: ${{ vars.TOY_AUTO_SUBMIT }}
+        run: |
+          mode=preview
+          if [ "$MANUAL_SUBMIT" = true ] || { [ "$GITHUB_EVENT_NAME" = workflow_run ] && [ "$AUTO_SUBMIT" = true ]; }; then
+            mode=submit
+            export TOY_SUBMIT_APPROVED=1
+          fi
+          python3 scripts/publish-toy.py --mode "$mode"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gloria-toy-publication
+          path: .local/toy/publication-result.json
+          include-hidden-files: true
+          retention-days: 7
